@@ -17,4 +17,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/test-roles', function () {
+
+    // 1. Iremos a la base de datos y pediremos todos los datos de la tabla 'roles'.
+    $roles = DB::table('roles_tabla')->get();
+
+    // 2. Devolveremos lo que encontramos.
+    // Laravel es lo suficientemente inteligente para convertir esto en JSON.
+    return $roles;
+
+});
+
 require __DIR__.'/auth.php';
