@@ -21,5 +21,31 @@
                 {{ __('Email Password Reset Link') }}
             </x-primary-button>
         </div>
+
+        <div id="login-modal" class="login-overlay">
+        <div class="login-modal-content">
+            <a href="#" class="login-close-btn">&times;</a>
+            <img src="/img/logo-queretaro.png" alt="Logo Querétaro" class="login-logo">
+            
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Correo Electrónico" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Contraseña" required>
+                </div>
+                
+                <a href="{{ route('password.request') }}" class="forgot-password">Olvidé mi contraseña</a>
+                
+                <a href="{{ route('register.choice') }}" class="register-link">¿No tienes cuenta? Regístrate aquí</a>
+                
+                <button type="submit" class="btn">Entrar</button>
+            </form>
+        </div>
+    </div>
     </form>
+
+
+    
 </x-guest-layout>
