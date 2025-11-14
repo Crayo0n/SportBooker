@@ -22,7 +22,7 @@
         <h1 class="brand">SportBooker</h1>
 
         <ul class="nav-links">
-            <li><a href="#inicio">Inicio</a></li>
+        <li><a href="{{ url('/') }}#inicio">Inicio</a></li>
             <li><a href="{{ route('cancha.detalle') }}">Canchas</a></li>
             <li><a href="#" id="loginLink">Inicio Sesión</a></li>
         </ul>
