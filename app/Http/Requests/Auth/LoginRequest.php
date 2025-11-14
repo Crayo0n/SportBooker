@@ -41,6 +41,7 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        // 1. Intentamos loguear con Email y Contraseña
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
@@ -48,6 +49,24 @@ class LoginRequest extends FormRequest
                 'email' => trans('auth.failed'),
             ]);
         }
+
+        // --- NUESTRA REGLA DE SEGURIDAD (CHECK STATUS) ---
+        
+        $user = Auth::user(); // Obtenemos al usuario que acaba de pasar la contraseña
+
+        // Verificamos si NO está aprobado
+        if ($user->status !== 'Aprobado') {
+            
+            // ¡IMPORTANTE! Lo sacamos del sistema inmediatamente
+            Auth::logout();
+
+            // Le mandamos un error específico
+            throw ValidationException::withMessages([
+                'email' => 'Tu cuenta está en estatus: ' . $user->status . '. Por favor espera la aprobación del administrador.',
+            ]);
+        }
+        
+        // --------------------------------------------------
 
         RateLimiter::clear($this->throttleKey());
     }

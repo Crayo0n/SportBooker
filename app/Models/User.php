@@ -6,9 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
-// Importamos las clases para las relaciones
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -16,7 +14,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
+
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -63,7 +63,7 @@ class User extends Authenticatable
      */
     public function role(): BelongsTo
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Roles::class);
     }
 
     /**
@@ -73,7 +73,7 @@ class User extends Authenticatable
     public function documents(): HasMany
     {
         // Nota: Crearemos el modelo UserDocument más adelante
-        return $this->hasMany(UserDocument::class);
+        return $this->hasMany(Documentos_Usuario::class);
     }
 
     /**
@@ -81,9 +81,7 @@ class User extends Authenticatable
      */
     public function complex(): HasOne
     {
-        // Nota: Crearemos el modelo Complex más adelante.
-        // Especificamos 'admin_user_id' porque así llamamos a la FK en la migración.
-        return $this->hasOne(Complex::class, 'admin_user_id');
+        return $this->hasOne(Complejos::class, 'admin_user_id');
     }
 
     /**
@@ -91,8 +89,7 @@ class User extends Authenticatable
      */
     public function reservations(): HasMany
     {
-        // Nota: Crearemos el modelo Reservation más adelante
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Reservacion::class);
     }
 
     /**
@@ -100,7 +97,6 @@ class User extends Authenticatable
      */
     public function recurringRequests(): HasMany
     {
-        // Nota: Crearemos el modelo RecurringReservationRequest más adelante
-        return $this->hasMany(RecurringReservationRequest::class);
+        return $this->hasMany(Reservaciones_Equipo::class);
     }
 }
