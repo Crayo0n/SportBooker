@@ -28,4 +28,8 @@ Route::get('/test-roles', function () {
 
 });
 
+
 require __DIR__.'/auth.php';
+Route::get('/cancha-detalle', function () {
+    return view('cancha-detalle');
+})->name('cancha.detalle');
