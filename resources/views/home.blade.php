@@ -23,7 +23,7 @@
 
         <ul class="nav-links">
             <li><a href="#inicio">Inicio</a></li>
-            <li><a href="#equipos">Canchas</a></li>
+            <li><a href="{{ route('cancha.detalle') }}">Canchas</a></li>
             <li><a href="#" id="loginLink">Inicio Sesión</a></li>
         </ul>
 
