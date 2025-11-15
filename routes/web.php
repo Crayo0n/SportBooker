@@ -33,3 +33,7 @@ require __DIR__.'/auth.php';
 Route::get('/cancha-detalle', function () {
     return view('cancha-detalle');
 })->name('cancha.detalle');
+
+Route::get('/cancha-horarios', function () {
+    return view('cancha-horarios'); 
+})->name('cancha.horarios');
