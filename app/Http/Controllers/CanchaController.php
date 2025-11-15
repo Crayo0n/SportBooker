@@ -3,53 +3,126 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Canchas; 
+use Illuminate\Support\Facades\Auth; 
+use App\Models\Canchas;
+use App\Models\Complejos;
+use App\Models\Reservacion;
 
 class CanchaController extends Controller
 {
     /**
-     * 1. LISTAR CANCHAS 
-     * Devuelve la lista de canchas en formato JSON.
+     * Función privada para obtener el complejo del admin logueado.
+     * Esto evita repetir código.
      */
-    public function index()
+    private function getAdminComplex()
     {
-        // Trae todas las canchas de la base de datos
-        $canchas = Cancha::all(); 
-
-        return response()->json([
-            'mensaje' => 'Lista de canchas cargada correctamente',
-            'total' => $canchas->count(),
-            'datos' => $canchas
-        ], 200);
+        $adminUser = Auth::user();
+        return $adminUser->complex; 
     }
 
     /**
-     * 2. CREAR CANCHA 
-     * Recibe datos y crea una nueva cancha.
+     * READ : Muestra TODAS las canchas del admin logueado.
      */
-    public function store(Request $request)
+    public function index()
     {
-        // A. Validamos los datos 
-        $validated = $request->validate([
-            'id_complejo' => 'required|integer', 
-            'nombre' => 'required|string|max:255',
-            'tipo_deporte' => 'required|string',
-            'precio_por_hora' => 'required|numeric',
-        ]);
+        $complejo = $this->getAdminComplex();
+        if (!$complejo) {
+            return response()->json(['error' => 'No tienes un complejo asignado.'], 403);
+        }
 
-        // B. Guardamos en la Base de Datos
-        $nuevaCancha = Cancha::create([
-            'id_complejo' => $validated['id_complejo'],
-            'nombre' => $validated['nombre'],
-            'tipo_deporte' => $validated['tipo_deporte'],
-            'precio_por_hora' => $validated['precio_por_hora'],
-            'status' => 'Disponible' 
-        ]);
+        $canchas = $complejo->canchas; 
 
-        // C. Respondemos con éxito
         return response()->json([
-            'mensaje' => '¡Cancha creada con éxito!',
-            'datos' => $nuevaCancha
+            'mensaje' => 'Canchas de ' . $complejo->nombre,
+            'total' => $canchas->count(),
+            'canchas' => $canchas
+        ]);
+    }
+
+    /**
+     * CREATE: Crea una nueva cancha ASIGNADA a este admin.
+     */
+    public function store()
+    {
+        $complejo = $this->getAdminComplex();
+        if (!$complejo) {
+            return response()->json(['error' => 'No tienes un complejo asignado.'], 403);
+        }
+
+        // Datos de prueba (en la vida real vendrían de un formulario)
+        $datosPrueba = [
+            'id_complejo' => $complejo->id, 
+            'nombre' => 'Cancha de Voleibol (Test)',
+            'tipo_deporte' => 'Voleibol',
+            'precio_por_hora' => 250.00,
+            'status' => 'Disponible'
+        ];
+
+        $nuevaCancha = Canchas::create($datosPrueba);
+
+        return response()->json([
+            'mensaje' => 'Nueva cancha creada con éxito',
+            'cancha' => $nuevaCancha
         ], 201);
+    }
+
+    /**
+     * UPDATE : Edita una cancha específica.
+     */
+    public function update($id)
+    {
+        $complejo = $this->getAdminComplex();
+        $cancha = Canchas::find($id);
+
+        if (!$cancha) {
+            return response()->json(['error' => 'Esa cancha no existe.'], 404);
+        }
+
+        // Checamos si la cancha (ej. ID 5) pertenece al complejo del admin logueado
+        if ($cancha->id_complejo !== $complejo->id) {
+            return response()->json(['error' => 'No tienes permiso para editar esta cancha.'], 403);
+        }
+
+        // Datos de prueba para actualizar
+        $cancha->nombre = 'Cancha de Voleibol (EDITADA)';
+        $cancha->precio_por_hora = 300.00;
+        $cancha->save();
+
+        return response()->json([
+            'mensaje' => 'Cancha actualizada con éxito',
+            'cancha' => $cancha
+        ]);
+    }
+
+    /**
+     * DELETE : Elimina una cancha específica.
+     */
+    public function destroy($id)
+    {
+        $complejo = $this->getAdminComplex();
+        $cancha = Canchas::find($id);
+
+        if (!$cancha) {
+            return response()->json(['error' => 'Esa cancha no existe.'], 404);
+        }
+
+        if ($cancha->id_complejo !== $complejo->id) {
+            return response()->json(['error' => 'No tienes permiso para borrar esta cancha.'], 403);
+        }
+
+        //  No borrar si tiene reservas futuras
+        $tieneReservas = Reservacion::where('cancha_id', $id)
+                            ->where('hora_inicio', '>', now()) 
+                            ->exists();
+        
+        if ($tieneReservas) {
+            return response()->json([
+                'error' => 'No puedes borrar esta cancha, tiene reservas futuras activas.'
+            ], 400);
+        }
+
+        $cancha->delete();
+
+        return response()->json(['mensaje' => 'Cancha eliminada con éxito.']);
     }
 }

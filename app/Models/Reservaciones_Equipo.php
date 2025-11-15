@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
 class Reservaciones_Equipo extends Model
 {
     use HasFactory;
@@ -35,8 +36,8 @@ class Reservaciones_Equipo extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function court(): BelongsTo
+    public function cancha(): BelongsTo
     {
-        return $this->belongsTo(Cancha::class, 'cancha_id');
+        return $this->belongsTo(Canchas::class, 'cancha_id');
     }
 }

@@ -159,6 +159,51 @@ Route::get('/prueba-crear-admin', function () {
 
 
 
+use App\Http\Controllers\CanchaController;
+
+// --- GRUPO DE RUTAS PARA EL ADMIN DE CANCHA (CRUD) ---
+// Todo este grupo solo funciona si estás logueado como Admin
+Route::middleware('auth')->group(function () {
+
+    // 1. Ver mi inventario (READ)
+    Route::get('/admin/canchas', [CanchaController::class, 'index']);
+
+    // 2. Crear una cancha (CREATE)
+    Route::get('/admin/canchas/crear', [CanchaController::class, 'store']);
+
+    // 3. Editar una cancha (UPDATE)
+    // (Cambia el '2' por el ID de la cancha que quieras editar)
+    Route::get('/admin/canchas/editar/{id}', [CanchaController::class, 'update']);
+
+    // 4. Borrar una cancha (DELETE)
+    // (Cambia el '2' por el ID de la cancha que quieras borrar)
+    Route::get('/admin/canchas/borrar/{id}', [CanchaController::class, 'destroy']);
+
+});
+
+
+use App\Http\Controllers\BloqueoController;
+
+Route::middleware('auth')->group(function () {
+    // ... (Tus rutas del CRUD de Canchas están aquí) ...
+
+    // Ruta para probar el bloqueo
+    Route::get('/admin/bloquear-cancha', [BloqueoController::class, 'store']);
+});
+
+
+use App\Http\Controllers\SolicitudAbonoController;
+
+// Ruta para que el Cliente Recurrente pida el abono
+Route::get('/cliente/solicitar-abono', [SolicitudAbonoController::class, 'store']);
+
+use App\Http\Controllers\AdminAbonoController;
+
+// 1. (Admin) Ver la lista de solicitudes pendientes
+Route::get('/admin/abonos/pendientes', [AdminAbonoController::class, 'index']);
+
+// 2. (Admin) Aprobar una solicitud específica
+Route::get('/admin/abonos/aprobar/{id}', [AdminAbonoController::class, 'approve']);
 
 
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 // Importamos las clases para las relaciones
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Cancha;
 
 class Complejos extends Model
 {
@@ -40,9 +41,9 @@ class Complejos extends Model
     /**
      * Relación: Un Complejo tiene MUCHAS Canchas .
      */
-    public function courts(): HasMany
+    public function canchas(): HasMany
     {
-        return $this->hasMany(Complejos::class, 'id_complejo'); 
+        return $this->hasMany(Canchas::class, 'id_complejo'); 
     }
 
     /**
