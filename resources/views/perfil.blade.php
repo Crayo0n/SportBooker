@@ -38,140 +38,239 @@
     </nav>
 
     <!-- ===== CONTENIDO PERFIL ===== -->
-    <section class="profile-wrapper">
-        <!-- Tarjetas superiores -->
-        <div class="profile-grid">
-            <!-- Tarjeta 1: Nombre + Rol + Foto -->
-            <article class="profile-card profile-main">
-                <div class="profile-main-text">
-                    <p class="profile-label">Nombre:</p>
-                    <p class="profile-value">
-                        {{-- Aquí puedes usar los datos del usuario logueado --}}
-                        {{-- {{ Auth::user()->name }} --}}
-                        Luis Eduardo Santano Delgado
+    <main class="profile-page">
+        <section class="profile-wrapper">
+
+            <!-- ===== HEADER PERFIL / RESUMEN (SIN AVATAR) ===== -->
+            <header class="profile-header">
+                <div class="profile-header-main">
+                    <h2 class="profile-title">Mi perfil</h2>
+                    <p class="profile-subtitle">
+                        Revisa tu información personal, tus datos de acceso y los documentos vinculados a tu cuenta.
                     </p>
 
-                    <p class="profile-label">Rol:</p>
-                    <p class="profile-value">
-                        {{-- {{ $userRoleName }} --}}
-                        Usuario Ocasional
-                    </p>
-                </div>
 
-
-            </article>
-
-            <!-- Tarjeta 2: Correo + Contraseña + Teléfono -->
-            <article class="profile-card profile-access">
-                <div class="profile-access-row">
-                    <div>
-                        <p class="profile-label">Correo:</p>
-                        <p class="profile-value">
-                            {{-- {{ Auth::user()->email }} --}}
-                            luiseduardosantano@gmail.com
-                        </p>
-                    </div>
-                </div>
-
-                <div class="profile-access-row">
-                    <div>
-                        <p class="profile-label">Contraseña:</p>
-                        <p class="profile-value">
-                            ************** <span class="profile-small-action">(Editar)</span>
-                        </p>
-                    </div>
-
-                    <div class="profile-access-phone">
-                        <p class="profile-label">Telefono:</p>
-                        <p class="profile-value">
-                            442-367-0572 <span class="profile-small-action">(Editar)</span>
-                        </p>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Tarjeta 3: Documentos -->
-            <article class="profile-card profile-docs">
-                <p class="profile-docs-title">Documentos</p>
-
-                <div class="profile-docs-list">
-                    <div class="profile-doc-item">
-                        <span class="profile-doc-name">INE</span>
-                        <button type="button" class="profile-doc-link">Ver</button>
-                    </div>
-
-                    <div class="profile-doc-item">
-                        <span class="profile-doc-name">Comprobante De Domicilio</span>
-                        <button type="button" class="profile-doc-link">Ver</button>
-                    </div>
-
-                    <div class="profile-doc-item">
-                        <span class="profile-doc-name">Carta Compromiso</span>
-                        <button type="button" class="profile-doc-link">Ver</button>
-                    </div>
-                </div>
-            </article>
-        </div>
-
-        <!-- Tabla de funcionalidades -->
-        <section class="profile-table-section">
-            <header class="profile-table-header">
-                <h2>Panel de funcionalidades</h2>
-                <p>
-                    Acciones disponibles para este usuario según su rol.
-                    {{-- Puedes cambiar este texto dinámicamente con Blade --}}
-                </p>
             </header>
 
-            <div class="profile-table-card">
-                <table class="profile-table">
-                    <thead>
-                        <tr>
-                            <th>Funcionalidad</th>
-                            <th>Descripción</th>
-                            <th>Estado</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{-- Ejemplo estático. Luego puedes recorrer un arreglo de permisos --}}
-                        {{-- @foreach($acciones as $accion) --}}
-                        {{-- <tr> --}}
-                        {{--   <td>{{ $accion->nombre }}</td> --}}
-                        {{--   <td>{{ $accion->descripcion }}</td> --}}
-                        {{--   <td>... </td> --}}
-                        {{--   <td>... </td> --}}
-                        {{-- </tr> --}}
-                        {{-- @endforeach --}}
+            <!-- ===== GRID DE TARJETAS SUPERIORES ===== -->
+            <section class="profile-grid">
 
-                        <tr>
-                            <td>Reservar cancha</td>
-                            <td>Permite crear nuevas reservaciones.</td>
-                            <td><span class="status-pill status-on">Activo</span></td>
-                            <td><button class="table-action">Ir</button></td>
-                        </tr>
-                        <tr>
-                            <td>Historial de reservas</td>
-                            <td>Consulta de todas las reservas realizadas.</td>
-                            <td><span class="status-pill status-on">Activo</span></td>
-                            <td><button class="table-action">Ver</button></td>
-                        </tr>
-                        <tr>
-                            <td>Gestión de usuarios</td>
-                            <td>Alta, baja y edición de usuarios (solo administradores).</td>
-                            <td><span class="status-pill status-off">No disponible</span></td>
-                            <td><button class="table-action table-action-disabled" disabled>Restringido</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <!-- Tarjeta 1: Información básica -->
+                <article class="profile-card profile-main">
+                    <header class="profile-card-header">
+                        <h3>Información básica</h3>
+                        <span class="profile-chip profile-chip-soft">Datos personales</span>
+                    </header>
+
+                    <div class="profile-main-body">
+                        <div class="profile-field">
+                            <p class="profile-label">Nombre completo</p>
+                            <p class="profile-value">
+                                {{-- {{ Auth::user()->name }} --}}
+                                Luis Eduardo Santano Delgado
+                            </p>
+                        </div>
+
+                        <div class="profile-field">
+                            <p class="profile-label">Rol dentro del sistema</p>
+                            <p class="profile-value">
+                                {{-- {{ $userRoleName }} --}}
+                                Usuario Ocasional
+                            </p>
+                        </div>
+
+                        <div class="profile-field-inline">
+                            <div>
+                                <p class="profile-label">Teléfono</p>
+                                <p class="profile-value">
+                                    442-367-0572
+                                </p>
+                            </div>
+                            <button type="button" class="profile-inline-btn">
+                                Editar datos
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Tarjeta 2: Acceso a la cuenta -->
+                <article class="profile-card profile-access">
+                    <header class="profile-card-header">
+                        <h3>Acceso a la cuenta</h3>
+                        <span class="profile-chip">Seguridad</span>
+                    </header>
+
+                    <div class="profile-access-body">
+                        <div class="profile-field">
+                            <p class="profile-label">Correo de acceso</p>
+                            <p class="profile-value">
+                                {{-- {{ Auth::user()->email }} --}}
+                                luiseduardosantano@gmail.com
+                            </p>
+                        </div>
+
+                        <div class="profile-field">
+                            <p class="profile-label">Contraseña</p>
+                            <p class="profile-value">
+                                **************
+                            </p>
+                            <button type="button" class="profile-inline-link">
+                                Cambiar contraseña
+                            </button>
+                        </div>
+
+                        <div class="profile-field">
+                            <p class="profile-label">Último inicio de sesión</p>
+                            <p class="profile-value profile-value-muted">
+                                14/11/2025 · 21:45
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Tarjeta 3: Documentos -->
+                <article class="profile-card profile-docs">
+                    <header class="profile-card-header">
+                        <h3>Documentos</h3>
+                        <span class="profile-chip profile-chip-soft">Verificación</span>
+                    </header>
+
+                    <div class="profile-docs-body">
+                        <p class="profile-docs-hint">
+                            Estos documentos ayudan a verificar tu identidad y agilizar el proceso de reserva.
+                        </p>
+
+                        <div class="profile-docs-list">
+                            <div class="profile-doc-item">
+                                <div class="profile-doc-text">
+                                    <span class="profile-doc-name">INE</span>
+                                    <span class="profile-doc-status profile-doc-status-ok">Cargado</span>
+                                </div>
+                                <button type="button" class="profile-doc-link">Ver</button>
+                            </div>
+
+                            <div class="profile-doc-item">
+                                <div class="profile-doc-text">
+                                    <span class="profile-doc-name">Comprobante de domicilio</span>
+                                    <span class="profile-doc-status profile-doc-status-ok">Cargado</span>
+                                </div>
+                                <button type="button" class="profile-doc-link">Ver</button>
+                            </div>
+
+                            <div class="profile-doc-item">
+                                <div class="profile-doc-text">
+                                    <span class="profile-doc-name">Carta compromiso</span>
+                                    <span class="profile-doc-status profile-doc-status-pending">Pendiente</span>
+                                </div>
+                                <button type="button" class="profile-doc-link">Cargar</button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <!-- ===== PANEL DE FUNCIONALIDADES ===== -->
+            <section class="profile-table-section">
+                <article class="profile-table-card">
+                    <header class="profile-table-header">
+                        <div>
+                            <h2>Panel de funcionalidades</h2>
+                            <p>
+                                Acciones disponibles para este usuario según su rol dentro del sistema.
+                            </p>
+                        </div>
+
+                        <div class="profile-table-legend">
+                            <span class="profile-pill profile-pill-role">Admin / Super admin</span>
+                            <span class="profile-pill profile-pill-soft">Usuario ocasional</span>
+                        </div>
+                    </header>
+
+                    <div class="profile-table-wrapper">
+                        <table class="profile-table">
+                            <thead>
+                                <tr>
+                                    <th>Funcionalidad</th>
+                                    <th>Descripción</th>
+                                    <th>Rol</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{-- Gestión de administradores (solo super admin) --}}
+                                <tr>
+                                    <td>Gestión de administradores</td>
+                                    <td>Permite aceptar o rechazar solicitudes y administrar cuentas de administradores.</td>
+                                    <td>
+                                        <span class="profile-tag profile-tag-danger">
+                                            Solo Super admin
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('gestion-administradores') }}" class="table-action">
+                                            Ver
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                {{-- Historial de reservas (para todos los usuarios) --}}
+                                <tr>
+                                    <td>Historial de reservas</td>
+                                    <td>Consulta todas las reservas realizadas y su estado (activa, pendiente o rechazada).</td>
+                                    <td>
+                                        <span class="profile-tag profile-tag-ok">
+                                            Todos los usuarios
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('reservas.historial') }}" class="table-action">
+                                            Ver
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                {{-- Gestión de usuarios (admin y super admin) --}}
+                                <tr>
+                                    <td>Gestión de usuarios</td>
+                                    <td>Alta, baja y edición de usuarios del sistema (solo administradores).</td>
+                                    <td>
+                                        <span class="profile-tag profile-tag-warn">
+                                            Admin / Super admin
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('gestion.usuarios') }}" class="table-action">
+                                            Ver
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                {{-- Ejemplo de funcionalidad restringida actual para este perfil --}}
+                                <tr>
+                                    <td>Gestión avanzada de usuarios</td>
+                                    <td>Configuraciones especiales de acceso y permisos detallados.</td>
+                                    <td>
+                                        <span class="profile-tag profile-tag-danger">
+                                            Restringido
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="table-action table-action-disabled" disabled>
+                                            Restringido
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </section>
         </section>
-    </section>
+    </main>
 
     <!-- ===== FOOTER ===== -->
     <footer class="footer" id="contacto">
         <div class="inner">
-           
             <h2>Contactos y Atención Ciudadana</h2>
             <p>
                 Horarios De Atención: Lunes a viernes de 8:00 a 16:00 horas<br />
