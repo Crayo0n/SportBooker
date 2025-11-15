@@ -37,3 +37,7 @@ Route::get('/cancha-detalle', function () {
 Route::get('/cancha-horarios', function () {
     return view('cancha-horarios'); 
 })->name('cancha.horarios');
+
+Route::get('/perfil', function () {
+    return view('perfil'); 
+})->name('perfil');
