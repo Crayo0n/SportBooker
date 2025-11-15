@@ -41,3 +41,16 @@ Route::get('/cancha-horarios', function () {
 Route::get('/perfil', function () {
     return view('perfil'); 
 })->name('perfil');
+
+Route::get('/gestion-administradores', function () {
+    return view('gestion-administradores'); 
+})->name('gestion-administradores');
+
+Route::get('/historial-reservas', function () {
+    return view('historial-reservas'); // resources/views/historial-reservas.blade.php
+})->name('reservas.historial');
+
+
+Route::get('/gestion-usuarios', function () {
+    return view('gestion-usuarios');
+})->name('gestion.usuarios');
