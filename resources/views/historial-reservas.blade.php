@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>SportBooker – Historial de Reservas</title>
+    <title>SportBooker – Historial de Reservas (Administrador)</title>
 
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css?family=Black+Ops+One&display=swap" rel="stylesheet" />
@@ -43,38 +43,39 @@
         <!-- Encabezado principal -->
         <header class="history-header">
             <div class="history-header-main">
-                <h2>Historial de reservas</h2>
+                <h2>Historial de reservas (Administrador)</h2>
                 <p>
-                    Consulta todas tus reservas realizadas, así como su estado actual
-                    (<strong>Activa</strong>, <strong>Pendiente</strong> o <strong>Rechazada</strong>).
+                    Vista previa de todas las reservaciones registradas en el sistema.
+                    Aquí puedes revisar datos de usuario, cancha, horarios, método de pago
+                    y el estado tanto del pago como de la reservación.
                 </p>
             </div>
         </header>
 
-        <!-- Tarjetas de resumen -->
+        <!-- Tarjetas de resumen (pueden conectarse a agregados de BD después) -->
         <section class="history-summary-grid">
             <article class="history-summary-card summary-all">
                 <p class="summary-label">Reservas totales</p>
-                <p class="summary-value">12</p>
-                <p class="summary-note">Incluye todas las reservas realizadas en SportBooker.</p>
+                <p class="summary-value">24</p>
+                <p class="summary-note">Todas las reservaciones registradas en SportBooker.</p>
             </article>
 
             <article class="history-summary-card summary-active">
                 <p class="summary-label">Reservas activas</p>
-                <p class="summary-value">3</p>
-                <p class="summary-note">Reservas confirmadas y próximas a usarse.</p>
+                <p class="summary-value">8</p>
+                <p class="summary-note">Reservas con reservación_estatus = “activa”.</p>
             </article>
 
             <article class="history-summary-card summary-pending">
                 <p class="summary-label">Reservas pendientes</p>
-                <p class="summary-value">7</p>
-                <p class="summary-note">En espera de confirmación por el administrador.</p>
+                <p class="summary-value">10</p>
+                <p class="summary-note">Reservas en revisión (reservación_estatus = “pendiente”).</p>
             </article>
 
             <article class="history-summary-card summary-rejected">
                 <p class="summary-label">Reservas rechazadas</p>
-                <p class="summary-value">2</p>
-                <p class="summary-note">Reservas canceladas o no autorizadas.</p>
+                <p class="summary-value">6</p>
+                <p class="summary-note">Reservas con reservación_estatus = “rechazada”.</p>
             </article>
         </section>
 
@@ -85,24 +86,37 @@
             <article class="history-card history-filters-card">
                 <header class="history-table-header">
                     <h3>Listado de reservas</h3>
+                    
                     <p>
-                        Filtra por estado o por fecha para encontrar una reserva específica.
+                        Filtra por estado de reservación, estado de pago o fecha para encontrar una reservación específica.
                     </p>
                 </header>
 
                 <form class="history-filters" onsubmit="event.preventDefault()">
                     <div class="filter-group">
-                        <label for="filterStatus">Estado</label>
-                        <select id="filterStatus" name="estado">
+                        <label for="filterStatusReserva">Estado de reservación</label>
+                        <select id="filterStatusReserva" name="reservacion_estatus">
                             <option value="">Todos</option>
-                            <option value="activa" selected>Pendiente</option>
+                            <option value="pendiente">Pendiente</option>
                             <option value="activa">Activa</option>
                             <option value="rechazada">Rechazada</option>
+                            <option value="cancelada">Cancelada</option>
                         </select>
                     </div>
 
                     <div class="filter-group">
-                        <label for="filterDate">Fecha</label>
+                        <label for="filterStatusPago">Estado de pago</label>
+                        <select id="filterStatusPago" name="pago_estatus">
+                            <option value="">Todos</option>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="pagado">Pagado</option>
+                            <option value="fallido">Fallido</option>
+                            <option value="reembolsado">Reembolsado</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filterDate">Fecha (hora_inicio)</label>
                         <input type="date" id="filterDate" name="fecha" />
                     </div>
 
@@ -114,78 +128,110 @@
             <article class="history-card history-table-card">
                 <div class="history-table-header-row">
                     <p class="history-table-title">Reservas registradas</p>
+                
+                </div>
+                <div class="history-status-legend">
+                    <span class="legend-label">Estatus de pago:</span>
+                    <span class="status-pill status-activa">Pagado</span>
+                    <span class="status-pill status-pendiente">Pendiente</span>
+                    <span class="status-pill status-rechazada">Fallido</span>
+                    <span class="status-pill status-rechazada">Reembolsado</span>
+
+                    <span class="legend-separator">|</span>
+
+                    <span class="legend-label">Estatus de reservación:</span>
+                    <span class="status-pill status-activa">Activa</span>
+                    <span class="status-pill status-pendiente">Pendiente</span>
+                    <span class="status-pill status-rechazada">Rechazada</span>
+                    <span class="status-pill status-rechazada">Cancelada</span>
                 </div>
 
                 <div class="history-table-scroll">
                     <table class="history-table">
                         <thead>
                             <tr>
+                                <th>Usuario</th>
                                 <th>Cancha</th>
                                 <th>Fecha</th>
                                 <th>Horario</th>
-                                <th>Estado</th>
-                                <th>Folio</th>
+                                <th>Método de pago</th>
+                                <th>Estatus de pago</th>
+                                <th>Estatus de reservación</th>
+                                <th>Total</th>
                                 <th class="history-actions-cell">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Ejemplos de filas. Después los puedes generar con Blade -->
+                            <!-- Ejemplos de filas (vista previa). Luego los generas con Blade desde reservaciones_tabla -->
                             <tr>
-                                <td>Cancha de Futbol 7 · Campo 2</td>
-                                <td>14/11/2025</td>
-                                <td>19:00 - 20:00</td>
+                                <td>Juan Pérez</td>
+                                <td>Futbol 7 · Campo 2</td>
+                                <td>2025-11-14</td>
+                                <td>19:00 – 20:00</td>
+                                <td>Tarjeta de crédito</td>
                                 <td>
+                                    <!-- pago_estatus -->
+                                    <span class="status-pill status-activa">Pagado</span>
+                                </td>
+                                <td>
+                                    <!-- reservacion_estatus -->
                                     <span class="status-pill status-activa">Activa</span>
                                 </td>
-                                <td>SB-2025-0012</td>
+                                <td>$450.00</td>
                                 <td class="history-actions-cell">
                                     <button class="table-action">Detalles</button>
                                 </td>
                             </tr>
+
                             <tr>
-                                <td>Cancha de Basquetbol · Techada</td>
-                                <td>10/11/2025</td>
-                                <td>17:00 - 18:00</td>
+                                <td>Ana López</td>
+                                <td>Americano · Campo Principal</td>
+                                <td>2025-11-10</td>
+                                <td>17:00 – 19:00</td>
+                                <td>Transferencia</td>
                                 <td>
                                     <span class="status-pill status-pendiente">Pendiente</span>
                                 </td>
-                                <td>SB-2025-0011</td>
+                                <td>
+                                    <span class="status-pill status-pendiente">Pendiente</span>
+                                </td>
+                                <td>$900.00</td>
                                 <td class="history-actions-cell">
-                                    <button class="table-action">Detalles</button>
+                                    <button class="table-action">Revisar</button>
                                 </td>
                             </tr>
+
                             <tr>
-                                <td>Cancha de Tenis · Cancha 1</td>
-                                <td>08/11/2025</td>
-                                <td>08:00 - 09:00</td>
+                                <td>Carlos Ramírez</td>
+                                <td>Tenis · Cancha 1</td>
+                                <td>2025-11-08</td>
+                                <td>08:00 – 09:00</td>
+                                <td>Pago en efectivo</td>
+                                <td>
+                                    <span class="status-pill status-rechazada">Fallido</span>
+                                </td>
                                 <td>
                                     <span class="status-pill status-rechazada">Rechazada</span>
                                 </td>
-                                <td>SB-2025-0010</td>
+                                <td>$180.00</td>
                                 <td class="history-actions-cell">
                                     <button class="table-action table-action-disabled" disabled>Sin acción</button>
                                 </td>
                             </tr>
+
                             <tr>
-                                <td>Cancha de Americano · Campo Principal</td>
-                                <td>02/11/2025</td>
-                                <td>16:00 - 18:00</td>
+                                <td>Lucía Vega</td>
+                                <td>Basquetbol · Techada</td>
+                                <td>2025-11-02</td>
+                                <td>16:00 – 18:00</td>
+                                <td>Tarjeta de débito</td>
+                                <td>
+                                    <span class="status-pill status-activa">Pagado</span>
+                                </td>
                                 <td>
                                     <span class="status-pill status-activa">Activa</span>
                                 </td>
-                                <td>SB-2025-0009</td>
-                                <td class="history-actions-cell">
-                                    <button class="table-action">Detalles</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Cancha de Futbol 7 · Campo 1</td>
-                                <td>25/10/2025</td>
-                                <td>09:00 - 10:00</td>
-                                <td>
-                                    <span class="status-pill status-activa">Activa</span>
-                                </td>
-                                <td>SB-2025-0008</td>
+                                <td>$400.00</td>
                                 <td class="history-actions-cell">
                                     <button class="table-action">Detalles</button>
                                 </td>
@@ -194,12 +240,8 @@
                     </table>
                 </div>
 
-                <!-- Leyenda de estados -->
-                <div class="history-status-legend">
-                    <span class="status-pill status-activa">Activa</span>
-                    <span class="status-pill status-pendiente">Pendiente</span>
-                    <span class="status-pill status-rechazada">Rechazada</span>
-                </div>
+                <!-- Leyenda de estados basada en pago_estatus y reservacion_estatus -->
+
             </article>
         </section>
     </main>
@@ -218,76 +260,5 @@
 
     @vite('resources/js/app.js')
 
-    <!-- ===== MODAL LOGIN / REGISTRO / RECUPERAR ===== -->
-    <div id="authPanelBackdrop"></div>
-
-    <div id="authPanel" aria-modal="true" role="dialog" aria-labelledby="authTitle" tabindex="-1">
-        <button class="auth-close" id="authClose" aria-label="Cerrar">×</button>
-
-        <div class="auth-header">
-            <img class="auth-logo" src="{{ asset('images/v118_43.png') }}" alt="SportBooker">
-        </div>
-
-        <div class="auth-tabs" role="tablist">
-            <button id="tabLogin" class="active" aria-selected="true" aria-controls="formLogin">Iniciar sesión</button>
-            <button id="tabRegister" aria-selected="false" aria-controls="formRegister">Registrarse</button>
-            <button id="tabRecover" aria-selected="false" aria-controls="formRecover">Recuperar</button>
-        </div>
-
-        {{-- Login --}}
-        <form id="formLogin" class="auth-grid" autocomplete="on">
-            <div class="auth-field">
-                <label for="loginEmail" class="auth-label">Usuario</label>
-                <input id="loginEmail" class="auth-input" name="email" type="text" placeholder="Usuario" required />
-            </div>
-            <div class="auth-field">
-                <label for="loginPassword" class="auth-label">Contraseña</label>
-                <input id="loginPassword" class="auth-input" name="password" type="password" placeholder="Contraseña" required />
-            </div>
-            <div class="auth-actions">
-                <div class="auth-links">
-                    <a href="#" id="goRecover" class="auth-link">Recuperar Contraseña</a>
-                    <a href="#" id="goRegister" class="auth-link">Crear Cuenta</a>
-                </div>
-                <button type="submit" class="auth-submit">Entrar</button>
-            </div>
-        </form>
-
-        {{-- Registro --}}
-        <form id="formRegister" class="auth-grid" style="display:none" autocomplete="on">
-            <div class="auth-field">
-                <label for="regName" class="auth-label">Nombre completo</label>
-                <input id="regName" class="auth-input" type="text" placeholder="Tu nombre" required />
-            </div>
-            <div class="auth-field">
-                <label for="regEmail" class="auth-label">Correo</label>
-                <input id="regEmail" class="auth-input" type="email" placeholder="tu@correo.com" required />
-            </div>
-            <div class="auth-field">
-                <label for="regPassword" class="auth-label">Contraseña</label>
-                <input id="regPassword" class="auth-input" type="password" placeholder="••••••••" required />
-            </div>
-            <div class="auth-actions">
-                <div class="auth-links">
-                    <a href="#" id="backLoginFromReg" class="auth-link">Ya tengo cuenta</a>
-                </div>
-                <button type="submit" class="auth-submit">Registrarse</button>
-            </div>
-        </form>
-
-        {{-- Recuperar --}}
-        <form id="formRecover" class="auth-grid" style="display:none" autocomplete="on">
-            <div class="auth-field">
-                <label for="recEmail" class="auth-label">Correo</label>
-                <input id="recEmail" class="auth-input" type="email" placeholder="Ingresa tu correo" required />
-            </div>
-            <div class="auth-actions">
-                <div class="auth-links">
-                    <a href="#" id="backLoginFromRec" class="auth-link">Volver a iniciar sesión</a>
-                </div>
-                <button type="submit" class="auth-submit">Enviar</button>
-            </div>
-        </form>
-    </div>
 </body>
 </html>
