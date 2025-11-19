@@ -17,12 +17,186 @@
 </head>
 <body>
 
+
+</style>
+
+  <style>
+  .auth-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .auth-tabs button {
+    background: none;
+    border: none;
+    font-weight: 700;
+    color: #555;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+  }
+  .auth-tabs button.active {
+    color: #2b6fd0;
+    border-color: #2b6fd0;
+  }
+  </style>
+
+<!-- Modal content -->
+<!-- ===== Modal estilo "Querétaro" ===== -->
+<div id="authPanelBackdrop"></div>
+    <div id="authPanel" aria-modal="true" role="dialog" aria-labelledby="authTitle" tabindex="-1">
+      <button class="auth-close" id="authClose" aria-label="Cerrar">×</button>
+
+      <div class="auth-header">
+        <img class="auth-logo" src="{{ asset('images/v118_43.png') }}" alt="SportBooker">
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button id="tabLogin" class="active" aria-selected="true" aria-controls="formLogin">Iniciar sesión</button>
+        <button id="tabRegister" aria-selected="false" aria-controls="formRegister">Registrarse</button>
+        <button id="tabRecover" aria-selected="false" aria-controls="formRecover">Recuperar</button>
+      </div>
+
+      <!-- Login -->
+      <form id="formLogin" class="auth-grid" autocomplete="on">
+        <div class="auth-field">
+          <label for="loginEmail" class="auth-label">Usuario</label>
+          <input id="loginEmail" class="auth-input" name="email" type="text" placeholder="Usuario" required />
+        </div>
+        <div class="auth-field">
+          <label for="loginPassword" class="auth-label">Contraseña</label>
+          <input id="loginPassword" class="auth-input" name="password" type="password" placeholder="Contraseña" required />
+        </div>
+        <div class="auth-actions">
+          <div class="auth-links">
+            <a href="#" id="goRecover" class="auth-link">Recuperar Contraseña</a>
+            <a href="#" id="goRegister" class="auth-link">Crear Cuenta</a>
+          </div>
+          <button type="submit" class="auth-submit">Entrar</button>
+        </div>
+      </form>
+
+      <!-- Registro -->
+      <form id="formRegister" class="auth-grid" style="display:none" autocomplete="on">
+        <div class="auth-field">
+          <label for="regName" class="auth-label">Nombre completo</label>
+          <input id="regName" class="auth-input" type="text" placeholder="Tu nombre" required />
+        </div>
+        <div class="auth-field">
+          <label for="regEmail" class="auth-label">Correo</label>
+          <input id="regEmail" class="auth-input" type="email" placeholder="tu@correo.com" required />
+        </div>
+        <div class="auth-field">
+          <label for="regPassword" class="auth-label">Contraseña</label>
+          <input id="regPassword" class="auth-input" type="password" placeholder="••••••••" required />
+        </div>
+        <div class="auth-actions">
+          <div class="auth-links">
+            <a href="#" id="backLoginFromReg" class="auth-link">Ya tengo cuenta</a>
+          </div>
+          <button type="submit" class="auth-submit">Registrarse</button>
+        </div>
+      </form>
+
+      <!-- Recuperar -->
+      <form id="formRecover" class="auth-grid" style="display:none" autocomplete="on">
+        <div class="auth-field">
+          <label for="recEmail" class="auth-label">Correo</label>
+          <input id="recEmail" class="auth-input" type="email" placeholder="Ingresa tu correo" required />
+        </div>
+        <div class="auth-actions">
+          <div class="auth-links">
+            <a href="#" id="backLoginFromRec" class="auth-link">Volver a iniciar sesión</a>
+          </div>
+          <button type="submit" class="auth-submit">Enviar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ====== Scripts ====== -->
+    <script>
+      // Modal logic
+      (function(){
+        const backdrop = document.getElementById('authPanelBackdrop');
+        const panel = document.getElementById('authPanel');
+        const closeBtn = document.getElementById('authClose');
+
+        const formLogin = document.getElementById('formLogin');
+        const formRegister = document.getElementById('formRegister');
+        const formRecover = document.getElementById('formRecover');
+
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+        const tabRecover = document.getElementById('tabRecover');
+
+        const goRegister = document.getElementById('goRegister');
+        const goRecover = document.getElementById('goRecover');
+        const backLoginFromReg = document.getElementById('backLoginFromReg');
+        const backLoginFromRec = document.getElementById('backLoginFromRec');
+
+        const loginLink = document.getElementById('loginLink');
+
+        function openPanel(section='login'){
+          backdrop.style.display='block';
+          panel.style.display='block';
+          showSection(section);
+          setTimeout(()=>panel.focus(), 0);
+        }
+        function closePanel(){
+          backdrop.style.display='none';
+          panel.style.display='none';
+        }
+        function showSection(section){
+          formLogin.style.display='none';
+          formRegister.style.display='none';
+          formRecover.style.display='none';
+          tabLogin.classList.remove('active');
+          tabRegister.classList.remove('active');
+          tabRecover.classList.remove('active');
+          if(section==='register'){ formRegister.style.display='grid'; tabRegister.classList.add('active'); }
+          else if(section==='recover'){ formRecover.style.display='grid'; tabRecover.classList.add('active'); }
+          else { formLogin.style.display='grid'; tabLogin.classList.add('active'); }
+        }
+
+        // Abrir desde navbar
+        loginLink?.addEventListener('click', e=>{ e.preventDefault(); openPanel('login'); });
+
+        // Tabs
+        tabLogin.addEventListener('click', ()=>showSection('login'));
+        tabRegister.addEventListener('click', ()=>showSection('register'));
+        tabRecover.addEventListener('click', ()=>showSection('recover'));
+
+        // Enlaces internos
+        goRegister.addEventListener('click', e=>{ e.preventDefault(); showSection('register'); });
+        goRecover.addEventListener('click', e=>{ e.preventDefault(); showSection('recover'); });
+        backLoginFromReg.addEventListener('click', e=>{ e.preventDefault(); showSection('login'); });
+        backLoginFromRec.addEventListener('click', e=>{ e.preventDefault(); showSection('login'); });
+
+        // Cerrar
+        closeBtn.addEventListener('click', closePanel);
+        backdrop.addEventListener('click', closePanel);
+        document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePanel(); });
+
+        // Demos
+        formLogin.addEventListener('submit', e=>{ e.preventDefault(); alert('Inicio de sesión demo'); });
+        formRegister.addEventListener('submit', e=>{ e.preventDefault(); alert('Registro demo'); });
+        formRecover.addEventListener('submit', e=>{ e.preventDefault(); alert('Recuperación demo'); });
+      })();
+    </script>
+</body>
+</html>
     <!-- ===== NAV ===== -->
     <nav class="navbar">
         <h1 class="brand">SportBooker</h1>
 
         <ul class="nav-links">
         <li><a href="{{ url('/') }}#inicio">Inicio</a></li>
+        <li><a href="{{ route('cancha.horarios') }}">Canchas+</a></li>
+        <li><a href="{{ route('perfil') }}">Canchas+*</a></li>
+        <li><a href="{{ route('solicitud.reserva') }}">Solicitud</a></li>
             <li><a href="{{ route('cancha.detalle') }}">Canchas</a></li>
             <li><a href="#" id="loginLink">Inicio Sesión</a></li>
         </ul>
@@ -206,6 +380,177 @@
 
 
 </div>
+<!-- Modal - Panel de autenticación o acción -->
+<div id="authPanelBackdrop"></div>
+<div id="authPanel">
+    <button class="auth-close" onclick="closeModal()">×</button>
+    <div class="auth-header">
+        <h3>Detalles de la Reserva</h3>
+    </div>
 
+    <!-- Formulario o información que se muestra en el modal -->
+    <div class="auth-grid">
+        <div class="auth-field">
+            <label class="auth-label" for="userName">Nombre del Usuario</label>
+            <input type="text" id="userName" class="auth-input" placeholder="Ingrese el nombre" readonly />
+        </div>
+
+        <div class="auth-field">
+            <label class="auth-label" for="fechaReserva">Fecha de la Reserva</label>
+            <input type="text" id="fechaReserva" class="auth-input" placeholder="Fecha de la reserva" readonly />
+        </div>
+        
+        <div class="auth-field">
+            <label class="auth-label" for="estadoReserva">Estado de la Reserva</label>
+            <input type="text" id="estadoReserva" class="auth-input" placeholder="Estado de la reserva" readonly />
+        </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="auth-actions">
+        <button class="auth-submit" onclick="approveReservation()">Aprobar</button>
+        <button class="auth-submit" onclick="rejectReservation()">Rechazar</button>
+    </div>
+</div>
+<div id="authPanelBackdrop"></div>
+    <div id="authPanel" aria-modal="true" role="dialog" aria-labelledby="authTitle" tabindex="-1">
+      <button class="auth-close" id="authClose" aria-label="Cerrar">×</button>
+
+      <div class="auth-header">
+        <img class="auth-logo" src="{{ asset('images/v118_43.png') }}" alt="SportBooker">
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button id="tabLogin" class="active" aria-selected="true" aria-controls="formLogin">Iniciar sesión</button>
+        <button id="tabRegister" aria-selected="false" aria-controls="formRegister">Registrarse</button>
+        <button id="tabRecover" aria-selected="false" aria-controls="formRecover">Recuperar</button>
+      </div>
+
+      <!-- Login -->
+      <form id="formLogin" class="auth-grid" autocomplete="on">
+        <div class="auth-field">
+          <label for="loginEmail" class="auth-label">Usuario</label>
+          <input id="loginEmail" class="auth-input" name="email" type="text" placeholder="Usuario" required />
+        </div>
+        <div class="auth-field">
+          <label for="loginPassword" class="auth-label">Contraseña</label>
+          <input id="loginPassword" class="auth-input" name="password" type="password" placeholder="Contraseña" required />
+        </div>
+        <div class="auth-actions">
+          <div class="auth-links">
+            <a href="#" id="goRecover" class="auth-link">Recuperar Contraseña</a>
+            <a href="#" id="goRegister" class="auth-link">Crear Cuenta</a>
+          </div>
+          <button type="submit" class="auth-submit">Entrar</button>
+        </div>
+      </form>
+
+      <!-- Registro -->
+      <form id="formRegister" class="auth-grid" style="display:none" autocomplete="on">
+        <div class="auth-field">
+          <label for="regName" class="auth-label">Nombre completo</label>
+          <input id="regName" class="auth-input" type="text" placeholder="Tu nombre" required />
+        </div>
+        <div class="auth-field">
+          <label for="regEmail" class="auth-label">Correo</label>
+          <input id="regEmail" class="auth-input" type="email" placeholder="tu@correo.com" required />
+        </div>
+        <div class="auth-field">
+          <label for="regPassword" class="auth-label">Contraseña</label>
+          <input id="regPassword" class="auth-input" type="password" placeholder="••••••••" required />
+        </div>
+        <div class="auth-actions">
+          <div class="auth-links">
+            <a href="#" id="backLoginFromReg" class="auth-link">Ya tengo cuenta</a>
+          </div>
+          <button type="submit" class="auth-submit">Registrarse</button>
+        </div>
+      </form>
+
+      <!-- Recuperar -->
+      <form id="formRecover" class="auth-grid" style="display:none" autocomplete="on">
+        <div class="auth-field">
+          <label for="recEmail" class="auth-label">Correo</label>
+          <input id="recEmail" class="auth-input" type="email" placeholder="Ingresa tu correo" required />
+        </div>
+        <div class="auth-actions">
+          <div class="auth-links">
+            <a href="#" id="backLoginFromRec" class="auth-link">Volver a iniciar sesión</a>
+          </div>
+          <button type="submit" class="auth-submit">Enviar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ====== Scripts ====== -->
+    <script>
+      // Modal logic
+      (function(){
+        const backdrop = document.getElementById('authPanelBackdrop');
+        const panel = document.getElementById('authPanel');
+        const closeBtn = document.getElementById('authClose');
+
+        const formLogin = document.getElementById('formLogin');
+        const formRegister = document.getElementById('formRegister');
+        const formRecover = document.getElementById('formRecover');
+
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+        const tabRecover = document.getElementById('tabRecover');
+
+        const goRegister = document.getElementById('goRegister');
+        const goRecover = document.getElementById('goRecover');
+        const backLoginFromReg = document.getElementById('backLoginFromReg');
+        const backLoginFromRec = document.getElementById('backLoginFromRec');
+
+        const loginLink = document.getElementById('loginLink');
+
+        function openPanel(section='login'){
+          backdrop.style.display='block';
+          panel.style.display='block';
+          showSection(section);
+          setTimeout(()=>panel.focus(), 0);
+        }
+        function closePanel(){
+          backdrop.style.display='none';
+          panel.style.display='none';
+        }
+        function showSection(section){
+          formLogin.style.display='none';
+          formRegister.style.display='none';
+          formRecover.style.display='none';
+          tabLogin.classList.remove('active');
+          tabRegister.classList.remove('active');
+          tabRecover.classList.remove('active');
+          if(section==='register'){ formRegister.style.display='grid'; tabRegister.classList.add('active'); }
+          else if(section==='recover'){ formRecover.style.display='grid'; tabRecover.classList.add('active'); }
+          else { formLogin.style.display='grid'; tabLogin.classList.add('active'); }
+        }
+
+        // Abrir desde navbar
+        loginLink?.addEventListener('click', e=>{ e.preventDefault(); openPanel('login'); });
+
+        // Tabs
+        tabLogin.addEventListener('click', ()=>showSection('login'));
+        tabRegister.addEventListener('click', ()=>showSection('register'));
+        tabRecover.addEventListener('click', ()=>showSection('recover'));
+
+        // Enlaces internos
+        goRegister.addEventListener('click', e=>{ e.preventDefault(); showSection('register'); });
+        goRecover.addEventListener('click', e=>{ e.preventDefault(); showSection('recover'); });
+        backLoginFromReg.addEventListener('click', e=>{ e.preventDefault(); showSection('login'); });
+        backLoginFromRec.addEventListener('click', e=>{ e.preventDefault(); showSection('login'); });
+
+        // Cerrar
+        closeBtn.addEventListener('click', closePanel);
+        backdrop.addEventListener('click', closePanel);
+        document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePanel(); });
+
+        // Demos
+        formLogin.addEventListener('submit', e=>{ e.preventDefault(); alert('Inicio de sesión demo'); });
+        formRegister.addEventListener('submit', e=>{ e.preventDefault(); alert('Registro demo'); });
+        formRecover.addEventListener('submit', e=>{ e.preventDefault(); alert('Recuperación demo'); });
+      })();
+    </script>
 </body>
 </html>
