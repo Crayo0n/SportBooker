@@ -1,0 +1,430 @@
+
+/* --- Layout general de la página --- */
+body{
+    margin:0;
+    padding-top:80px;              /* para navbar fija */
+    font-family:'Inter',system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    color:#0b0f19;
+    background:#f3f4f6;
+}
+
+.admin-wrapper{
+    max-width:1180px;
+    margin:32px auto 64px;
+    padding:0 16px 32px;
+}
+
+/* --- Header principal --- */
+.admin-header{
+    margin-bottom:24px;
+}
+
+.admin-header-main h2{
+    font-size:28px;
+    font-weight:700;
+    margin:0 0 8px;
+}
+
+.admin-header-main p{
+    margin:0;
+    font-size:15px;
+    color:#4b5563;
+    max-width:720px;
+}
+
+/* =========================================================
+   TARJETAS DE RESUMEN (fila de 4 cards)
+   ========================================================= */
+.admin-summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:18px;
+    margin-bottom:28px;
+}
+
+.admin-summary-card{
+    background:#ffffff;
+    border-radius:16px;
+    padding:16px 18px;
+    box-shadow:0 8px 24px rgba(15,23,42,.06);
+    border:1px solid #e5e7eb;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    min-height:110px;
+}
+
+.summary-label{
+    font-size:13px;
+    font-weight:600;
+    color:#6b7280;
+    margin:0 0 6px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+}
+
+.summary-value{
+    font-size:26px;
+    font-weight:800;
+    margin:0 0 4px;
+    color:#111827;
+}
+
+.summary-note{
+    font-size:13px;
+    color:#9ca3af;
+    margin:0;
+}
+
+.summary-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:4px 10px;
+    border-radius:999px;
+    background:#fee2e2;
+    color:#b91c1c;
+    font-size:13px;
+}
+
+/* Colores ligeros para diferenciar tarjetas (opcional) */
+.admin-summary-total   { border-top:4px solid #2563eb; }
+.admin-summary-active  { border-top:4px solid #16a34a; }
+.admin-summary-inactive{ border-top:4px solid #f97316; }
+.admin-summary-role    { border-top:4px solid #b91c1c; }
+
+/* =========================================================
+   TARJETA DE FILTROS + TARJETA DE TABLA
+   ========================================================= */
+
+.admin-content-section{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+/* Estructura base de tarjeta (similar a historial-reservas) */
+.admin-card{
+    background:#ffffff;
+    border-radius:18px;
+    box-shadow:0 12px 32px rgba(15,23,42,.08);
+    border:1px solid #e5e7eb;
+    padding:18px 20px 20px;
+}
+
+/* --- Header de tarjeta de filtros --- */
+.admin-card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:18px;
+    margin-bottom:14px;
+}
+
+.admin-card-header h3{
+    margin:0 0 4px;
+    font-size:20px;
+}
+
+.admin-card-header p{
+    margin:0;
+    font-size:14px;
+    color:#6b7280;
+    max-width:540px;
+}
+
+/* Botón principal (igual estilo que historial-reservas) */
+.primary-btn{
+    border:0;
+    border-radius:999px;
+    padding:10px 18px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    background:#1d4ed8;
+    color:#ffffff;
+    box-shadow:0 10px 24px rgba(37,99,235,.35);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    white-space:nowrap;
+}
+
+.primary-btn:hover{
+    filter:brightness(1.05);
+}
+
+/* --- Formulario de filtros --- */
+.admin-filters-form{
+    display:grid;
+    grid-template-columns:2.1fr 1.2fr 1.2fr auto;
+    gap:14px 16px;
+    align-items:end;
+}
+
+.admin-filter-group{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.admin-filter-label{
+    font-size:13px;
+    font-weight:600;
+    color:#6b7280;
+}
+
+.admin-filter-input,
+.admin-filter-select{
+    height:38px;
+    border-radius:999px;
+    border:1px solid #d1d5db;
+    padding:0 12px;
+    font-size:14px;
+    outline:none;
+    background:#f9fafb;
+}
+
+.admin-filter-input:focus,
+.admin-filter-select:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 1px rgba(37,99,235,.3);
+    background:#ffffff;
+}
+
+.filter-btn{
+    align-self:stretch;
+    border-radius:999px;
+    border:0;
+    padding:0 16px;
+    height:38px;
+    font-size:14px;
+    font-weight:600;
+    background:#0f766e;
+    color:#fff;
+    cursor:pointer;
+    box-shadow:0 10px 24px rgba(15,118,110,.32);
+    white-space:nowrap;
+}
+
+.filter-btn:hover{
+    filter:brightness(1.05);
+}
+
+/* =========================================================
+   TABLA DE ADMINISTRADORES – Card
+   ========================================================= */
+
+.admin-table-card{
+    padding-top:18px;
+}
+
+.admin-table-header-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    margin-bottom:10px;
+}
+
+.admin-table-title{
+    margin:0;
+    font-size:18px;
+    font-weight:700;
+}
+
+.admin-table-subtitle{
+    display:block;
+    margin-top:3px;
+    font-size:13px;
+    color:#6b7280;
+}
+
+/* --- Scroll horizontal suave en pantallas pequeñas --- */
+.admin-table-scroll{
+    width:100%;
+    overflow-x:auto;
+    margin-top:6px;
+}
+
+/* --- Estilo de tabla (similar a historial-reservas) --- */
+.admin-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+    min-width:780px;
+}
+
+.admin-table thead{
+    background:#f3f4f6;
+}
+
+.admin-table th,
+.admin-table td{
+    padding:10px 14px;
+    text-align:left;
+    border-bottom:1px solid #e5e7eb;
+    white-space:nowrap;
+}
+
+.admin-table th{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:#6b7280;
+    font-weight:700;
+}
+
+.admin-table tr:last-child td{
+    border-bottom:none;
+}
+
+.admin-table tbody tr{
+    background:#ffffff;
+    transition:background .15s ease;
+}
+
+.admin-table tbody tr:nth-child(odd){
+    background:#f9fafb;
+}
+
+.admin-table tbody tr:hover{
+    background:#e5f0ff;
+}
+
+/* --- Acciones de tabla --- */
+.admin-actions-header{
+    width:220px;
+}
+
+.admin-actions-cell{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+/* Botón acción de tabla (basado en historial-reservas) */
+.table-action{
+    border-radius:999px;
+    border:1px solid #1d4ed8;
+    padding:6px 14px;
+    font-size:13px;
+    font-weight:600;
+    background:#1d4ed8;
+    color:#ffffff;
+    cursor:pointer;
+    white-space:nowrap;
+    box-shadow:0 8px 18px rgba(37,99,235,.3);
+}
+
+.table-action:hover{
+    filter:brightness(1.05);
+}
+
+/* Variante editar (azul claro) */
+.admin-edit{
+    border-color:#0369a1;
+    background:#0369a1;
+    box-shadow:0 8px 18px rgba(3,105,161,.3);
+}
+
+/* Variante peligro (rojo) */
+.admin-danger{
+    border-color:#b91c1c;
+    background:#b91c1c;
+    box-shadow:0 8px 18px rgba(185,28,28,.35);
+}
+
+/* --- Chips de estado --- */
+.status-pill{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:76px;
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.status-on{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.status-off{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+
+/* Leyenda de estados (parte baja de la tarjeta) */
+.admin-status-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 18px;
+    margin-top:12px;
+    padding-top:10px;
+    border-top:1px dashed #e5e7eb;
+    font-size:12px;
+    color:#6b7280;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width:1024px){
+    .admin-summary-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .admin-filters-form{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media (max-width:768px){
+    .admin-wrapper{
+        margin-top:24px;
+    }
+
+    .admin-summary-grid{
+        grid-template-columns:1fr;
+    }
+
+    .admin-card{
+        padding:16px;
+    }
+
+    .admin-card-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .admin-filters-form{
+        grid-template-columns:1fr;
+    }
+
+    .filter-btn{
+        width:100%;
+    }
+
+    .admin-table{
+        font-size:13px;
+    }
+
+    .admin-actions-header{
+        width:180px;
+    }
+}
+
+@media (max-width:480px){
+    .admin-table-title{
+        font-size:16px;
+    }
+
+    .admin-table-subtitle{
+        font-size:12px;
+    }
+}

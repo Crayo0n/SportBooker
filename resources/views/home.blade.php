@@ -1,172 +1,211 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-M">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SportBooker - Querétaro</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SportBooker – Inicio</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css?family=Black+Ops+One&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Keania+One&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Blinker:400,600,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet" />
+
+    <!-- CSS externo -->
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
 </head>
 <body>
 
-    <header class="main-header">
-        <div class="header-container">
-            <img src="/img/LogoQueretaro.jpg" alt="Logo Querétaro" class="logo">
-            <nav class="main-nav">
-                <a href="#">Canchas</a>
-                <a href="#login-modal">Iniciar Sesión</a>
-            </nav>
-            <form class="search-form">
-                <input type="search" placeholder="Buscar...">
+    <!-- ===== NAV ===== -->
+    <nav class="navbar">
+        <h1 class="brand">SportBooker</h1>
+
+        <ul class="nav-links">
+        <li><a href="{{ url('/') }}#inicio">Inicio</a></li>
+            <li><a href="{{ route('cancha.detalle') }}">Canchas</a></li>
+            <li><a href="#" id="loginLink">Inicio Sesión</a></li>
+        </ul>
+
+        <div class="navbar-right">
+            <form id="searchForm" class="search" role="search" onsubmit="event.preventDefault()">
+                <input id="searchInput" type="search" placeholder="Buscar..." aria-label="Buscar en SportBooker" autocomplete="off" />
+                <button type="submit" aria-label="Buscar">⌕</button>
             </form>
         </div>
-    </header>
+    </nav>
 
-    <section class="slider-container">
-        <img src="/img/cancha_futbol.png" alt="Cancha de Fútbol 11" class="slider-image">
-        <div class="slider-caption">FÚTBOL 11</div>
-    </section>
+    <main id="inicio">
+        <!-- ===== HERO ===== -->
+        <section class="hero">
+            <div class="carousel" id="carousel">
+                <div class="slide active"><img src="/images/v118_9.png" alt="Cancha 1" loading="eager" /></div>
+                <div class="slide"><img src="/images/cancha2.png" alt="Cancha 2" loading="lazy" /></div>
+                <div class="slide"><img src="/images/cancha3.png" alt="Cancha 3" loading="lazy" /></div>
+                <div class="slide"><img src="/images/cancha4.png" alt="Cancha 4" loading="lazy" /></div>
+                <div class="slide"><img src="/images/cancha5.png" alt="Cancha 5" loading="lazy" /></div>
 
-    <main class="container">
+                <button class="carousel-btn prev" aria-label="Anterior">❮</button>
+                <button class="carousel-btn next" aria-label="Siguiente">❯</button>
 
-        <section class="events-section">
-            <h2>Eventos</h2>
-            <p>Conoce nuestros próximos eventos en los que puedes participar</p>
-            <div class="card-grid">
-                <div class="card">
-                    <img src="/img/evento1.png" alt="Concurso de Arreglo">
-                    <h4>Concurso de Arreglo</h4>
-                    <button class="btn">Ver Programa</button>
-                </div>
-                <div class="card">
-                    <img src="/img/evento2.png" alt="Portocho Techado">
-                    <h4>Portocho Techado</h4>
-                    <button class="btn">Ver Programa</button>
-                </div>
-                <div class="card">
-                    <img src="/img/evento3.png" alt="Partido Social">
-                    <h4>Partido Social 14's</h4>
-                    <button class="btn">Ver Programa</button>
+                <div class="carousel-indicators" role="tablist" aria-label="Indicadores">
+                    <span class="dot active" role="tab" aria-label="1"></span>
+                    <span class="dot" role="tab" aria-label="2"></span>
+                    <span class="dot" role="tab" aria-label="3"></span>
+                    <span class="dot" role="tab" aria-label="4"></span>
+                    <span class="dot" role="tab" aria-label="5"></span>
                 </div>
             </div>
         </section>
 
-        <section class="teams-section">
-            <div class="card-grid">
-                <div class="card">
-                    <img src="/img/futbol.png" alt="Equipo de Fútbol">
-                    <h4>Equipo de Fútbol</h4>
-                    <button class="btn-secondary">Más Información</button>
+        <!-- ===== EVENTOS ===== -->
+        <section class="section container" id="eventos">
+            <div class="ev-layout">
+                <!-- Columna Izquierda -->
+                <div class="ev-left">
+                    <!-- PNG de título (o fallback si no existe) -->
+                    <img src="/images/v118_58.png" alt="Eventos" style="max-width:260px;height:auto"
+                         onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'h-script',textContent:'Eventos'}));" />
+                    <p>Conoce nuestros próximos eventos en los que puedes participar.</p>
+                    <button class="btn">Ver Más</button>
                 </div>
-                <div class="card">
-                    <img src="/img/americano.png" alt="Equipo de American">
-                    <h4>Equipo de American</h4>
-                    <button class="btn-secondary">Más Información</button>
-                </div>
-                <div class="card">
-                    <img src="/img/basquetball.png" alt="Equipo de Basquetbol">
-                    <h4>Equipo de Basquetbol</h4>
-                    <button class="btn-secondary">Más Información</button>
+
+                <!-- Columna Derecha: 3 tarjetas (puedes agregar una cuarta si la necesitas) -->
+                <div class="ev-grid">
+                    <article class="card">
+                        <img src="/images/v118_17.png" alt="Competencia de Atletismo" loading="lazy">
+                        <div class="content"><h3>Atletismo</h3></div>
+                        <div class="actions"><button class="btn">Ver Programa</button></div>
+                    </article>
+                    <article class="card">
+                        <img src="/images/v118_18.png" alt="Partido Día del Padre" loading="lazy">
+                        <div class="content"><h3>Partido Día Del Padre</h3></div>
+                        <div class="actions"><button class="btn">Ver Programa</button></div>
+                    </article>
+                    <article class="card">
+                        <img src="/images/v118_19.png" alt="Partido Día del Niño" loading="lazy">
+                        <div class="content"><h3>Partido Día Del Niño</h3></div>
+                        <div class="actions"><button class="btn">Ver Programa</button></div>
+                    </article>
                 </div>
             </div>
-            <div class="teams-join">
-                <img src="/img/LogoQueretaro.jpg" alt="Logo Querétaro">
-                <h3>Forma Parte de Nuestros Equipos</h3>
-                <button class="btn-secondary">Más Información</button>
-            </div>
+
+            <div class="divider"></div>
         </section>
 
-        <section class="docs-section">
-            <h2>Registro De Canchas</h2>
-            <p>Documentos necesarios:</p>
-            <table class="docs-table">
-                <thead>
+        <!-- ===== QUERÉTARO / EQUIPOS ===== -->
+        <section class="section container" id="equipos">
+            <div class="qro-layout">
+                <!-- Izquierda: Tarjetas de equipos -->
+                <div class="team-grid">
+                    <article class="card">
+                        <img src="/images/v118_53.png" alt="Equipo de Futbol" loading="lazy">
+                        <div class="content"><h3>Equipo De Futbol</h3></div>
+                        <div class="actions"><button class="btn">Más Información</button></div>
+                    </article>
+                    <article class="card">
+                        <img src="/images/v118_54.png" alt="Equipo de Americano" loading="lazy">
+                        <div class="content"><h3>Equipo De Americano</h3></div>
+                        <div class="actions"><button class="btn">Más Información</button></div>
+                    </article>
+                    <article class="card">
+                        <img src="/images/v118_55.png" alt="Equipo de Básquetbol" loading="lazy">
+                        <div class="content"><h3>Equipo De Básquetbol</h3></div>
+                        <div class="actions"><button class="btn">Más Información</button></div>
+                    </article>
+                </div>
+
+                <!-- Derecha: Bloque Querétaro -->
+                <div class="qro-right">
+                    <div class="qro-logo"
+                         onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'qro-fallback',textContent:'Querétaro'}));">
+                    </div>
+                    <p>Forma Parte De Nuestros Equipos.</p>
+                    <button class="btn" style="min-width:120px">Ver Más</button>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+        </section>
+
+        <!-- ===== REGISTRO DE CANCHAS / TABLA ===== -->
+        <section class="section container" id="registro">
+            <div class="table-wrap">
+                <div class="reg-title">
+                    <div class="logo"
+                         onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'fallback',textContent:'Registro De Canchas'}));">
+                    </div>
+                </div>
+
+                <div class="subtle">Documentos necesarios</div>
+
+                <table class="tabla" role="table">
+                    <thead>
                     <tr>
                         <th>Documento</th>
                         <th>Descripción</th>
                         <th>Original/Copia</th>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Solicitud de espacio</td>
-                        <td>Escrito libre con la solicitud</td>
-                        <td>Original</td>
-                    </tr>
-                    <tr>
-                        <td>Acta de nacimiento</td>
-                        <td>Datos comprobatorios del ciudadano</td>
-                        <td>Copia</td>
-                    </tr>
-                    <tr>
-                        <td>CURP</td>
-                        <td>Validez del solicitante</td>
-                        <td>Copia</td>
-                    </tr>
-                    <tr>
-                        <td>Comprobante de domicilio</td>
-                        <td>Domicilio del solicitante</td>
-                        <td>Copia</td>
-                    </tr>
-                    <tr>
-                        <td>INE (presentar en caso de ser menor)</td>
-                        <td>Documento que compruebe la identidad del solicitante</td>
-                        <td>Copia</td>
-                    </tr>
-                    <tr>
-                        <td>Acta constitutiva (sólo si aplica)</td>
-                        <td>Documento registrado en el caso de ser asociación</td>
-                        <td>Copia</td>
-                    </tr>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <tr><td>Solicitud de espacio</td><td>Escrito libre con la solicitud</td><td>Original</td></tr>
+                    <tr><td>Acta de nacimiento</td><td>Datos complementarios del ciudadano</td><td>Copia</td></tr>
+                    <tr><td>CURP</td><td>Validar al ciudadano</td><td>Copia</td></tr>
+                    <tr><td>Comprobante de domicilio</td><td>Domicilio del solicitante</td><td>Copia</td></tr>
+                    <tr><td>INE (credencial del padre en caso de ser menor)</td><td>Documento que compruebe la identidad del solicitante</td><td>Copia</td></tr>
+                    <tr><td>Acta constitutiva (sólo si aplica)</td><td>Documento solicitado en el caso de ser asociación</td><td>Copia</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
 
-    <footer class="main-footer">
-        <div class="footer-container">
-            <div class="footer-logo">
-                <img src="/img/LogoQueretaro.jpg" alt="Logo Querétaro Footer">
-                <p>Palacio de la Corregidora, 5 de Mayo esq. Pasteur...</p>
-            </div>
-            <div class="footer-links">
-                <h4>Querétaro</h4>
-                <p>442 238 5770 (y más)</p>
-                <h4>Línea Única de Emergencias</h4>
-                <p>9-1-1</p>
-            </div>
-            <div class="footer-links">
-                <h4>Seguridad Pública</h4>
-                <p>442 427 6700</p>
-                <h4>DIF Municipal</h4>
-                <p>(y más números)</p>
-            </div>
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer" id="contacto">
+        <div class="inner">
+
+            <h2>Contactos y Atención Ciudadana</h2>
+            <p>
+                Horarios De Atención: Lunes a viernes de 8:00 a 16:00 horas<br />
+                Rivera del Río S/N, El Pueblito. C.P. 76900 Santiago de Querétaro, Qro.<br />
+                atencion.ciudadana@municipiodequeretaro.gob.mx
+            </p>
         </div>
     </footer>
 
-<div id="login-modal" class="login-overlay">
+    <!-- ===== Carrusel JS ===== -->
+    <script>
+        (function(){
+            const root=document.getElementById('carousel');
+            if(!root) return;
+            const slides=root.querySelectorAll('.slide');
+            const dots=root.querySelectorAll('.dot');
+            const prev=root.querySelector('.prev');
+            const next=root.querySelector('.next');
+            let i=0, t;
 
-    <div class="login-modal-content">
-        <a href="#" class="login-close-btn">&times;</a>
+            function show(n){
+                slides.forEach((s,idx)=>s.classList.toggle('active',idx===n));
+                dots.forEach((d,idx)=>d.classList.toggle('active',idx===n));
+                i=n;
+            }
+            function nextSlide(){ show((i+1)%slides.length); }
+            function prevSlide(){ show((i-1+slides.length)%slides.length); }
 
-        <img src="/img/LogoQueretaro.jpg" alt="Logo Querétaro" class="login-logo">
+            next.addEventListener('click', nextSlide);
+            prev.addEventListener('click', prevSlide);
+            dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx)));
 
-        <form>
-            <div class="form-group">
-                <input type="text" placeholder="Usuario" required>
-            </div>
-            <div class="form-group">
-                <input type="password" placeholder="Contraseña" required>
-            </div>
-            
-            <a href="{{ route('password.request') }}" class="forgot-password">Olvidé mi contraseña</a>
+            function auto(){ t=setInterval(nextSlide,5000); }
+            function stop(){ clearInterval(t); }
+            root.addEventListener('mouseenter', stop);
+            root.addEventListener('mouseleave', auto);
+            auto();
+        })();
+    </script>
 
-            <a href="{{ route('register.choice') }}" class="register-link">¿No tienes cuenta? Regístrate aquí</a>
-
-            <button type="submit" class="btn">Entrar</button>
-        </form>
-    </div>
 
 </div>
-</body> 
+
+</body>
 </html>

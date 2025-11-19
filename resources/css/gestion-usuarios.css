@@ -1,0 +1,424 @@
+/* ===== CONTENEDOR GENERAL ===== */
+
+.users-wrapper{
+    max-width:1100px;
+    width:92%;
+    margin:40px auto 80px;
+    padding:0 4px;
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+}
+
+/* ===== HEADER ===== */
+
+.users-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:18px;
+    margin-bottom:8px;
+}
+
+.users-header-main h2{
+    margin:0 0 6px;
+    font-family:'Blinker',sans-serif;
+    font-size:28px;
+    font-weight:700;
+    color:#0b0f19;
+}
+
+.users-header-main p{
+    margin:0;
+    font-family:'Blinker',sans-serif;
+    font-size:16px;
+    color:#4b5563;
+    max-width:620px;
+}
+
+/* ===== CARDS RESUMEN (ARRIBA) ===== */
+
+.users-summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:16px;
+}
+
+.users-summary-card{
+    background:#ffffff;
+    border-radius:16px;
+    padding:16px 18px;
+    box-shadow:0 10px 22px rgba(0,0,0,.08);
+    border:1px solid rgba(15,23,42,.06);
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.summary-label{
+    margin:0;
+    font-family:'Blinker',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:#6b7280;
+}
+
+.summary-value{
+    margin:0;
+    font-family:'Blinker',sans-serif;
+    font-size:28px;
+    font-weight:700;
+    color:#0b0f19;
+}
+
+.summary-note{
+    margin:2px 0 0;
+    font-family:'Blinker',sans-serif;
+    font-size:13px;
+    color:#6b7280;
+}
+
+/* Colores sutiles por tipo */
+.users-summary-total{
+    border-left:4px solid #2563eb;
+}
+.users-summary-active{
+    border-left:4px solid #16a34a;
+}
+.users-summary-blocked{
+    border-left:4px solid #dc2626;
+}
+.users-summary-pending{
+    border-left:4px solid #f59e0b;
+}
+
+/* ===== CONTENIDO (FILTROS + TABLA) ===== */
+
+.users-content-section{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+/* Card base */
+.users-card{
+    background:#ffffff;
+    border-radius:18px;
+    box-shadow:0 10px 24px rgba(0,0,0,.08);
+    border:1px solid rgba(15,23,42,.06);
+    padding:18px 20px 20px;
+}
+
+/* ===== CARD FILTROS ===== */
+
+.users-card-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:14px;
+}
+
+.users-card-header h3{
+    margin:0 0 4px;
+    font-family:'Blinker',sans-serif;
+    font-size:20px;
+    font-weight:700;
+    color:#0b0f19;
+}
+
+.users-card-header p{
+    margin:0;
+    font-family:'Blinker',sans-serif;
+    font-size:14px;
+    color:#6b7280;
+}
+
+/* Botón principal (similar a otros módulos) */
+.primary-btn{
+    border:0;
+    border-radius:999px;
+    padding:10px 18px;
+    background:var(--blue,#004f7c);
+    color:#fff;
+    font-family:'Blinker',sans-serif;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(0,79,124,.35);
+    transition:transform .08s ease, filter .16s ease;
+    white-space:nowrap;
+}
+.primary-btn:hover{filter:brightness(1.07);}
+.primary-btn:active{transform:scale(.97);}
+
+/* Form filtros */
+
+.users-filters-form{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:14px 16px;
+    align-items:end;
+}
+
+.users-filter-group{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.users-filter-label{
+    font-family:'Blinker',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    color:#4b5563;
+}
+
+.users-filter-input,
+.users-filter-select{
+    height:40px;
+    border-radius:10px;
+    border:1px solid rgba(15,23,42,.14);
+    padding:0 10px;
+    font-family:'Inter',system-ui,sans-serif;
+    font-size:14px;
+    outline:none;
+    background:#f9fafb;
+}
+.users-filter-input:focus,
+.users-filter-select:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 1px rgba(37,99,235,.4);
+}
+
+/* Botón aplicar filtros */
+
+.filter-btn{
+    height:40px;
+    border-radius:999px;
+    border:0;
+    background:#2563eb;
+    color:#fff;
+    font-family:'Blinker',sans-serif;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    padding:0 18px;
+    justify-self:flex-start;
+    box-shadow:0 8px 18px rgba(37,99,235,.35);
+    transition:transform .08s ease, filter .16s ease;
+}
+.filter-btn:hover{filter:brightness(1.06);}
+.filter-btn:active{transform:scale(.97);}
+
+/* ===== CARD TABLA ===== */
+
+.users-table-card{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.users-table-header-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+}
+
+.users-table-title{
+    margin:0 0 4px;
+    font-family:'Blinker',sans-serif;
+    font-size:20px;
+    font-weight:700;
+    color:#0b0f19;
+}
+
+.users-table-subtitle{
+    font-family:'Blinker',sans-serif;
+    font-size:14px;
+    color:#6b7280;
+}
+
+/* Pills de estados, misma idea que historial-reservas */
+
+.users-table-info{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+/* Reutilizamos la idea de .status-pill */
+.status-pill{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    padding:4px 10px;
+    font-size:12px;
+    font-family:'Blinker',sans-serif;
+    font-weight:600;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    border:1px solid transparent;
+}
+
+.status-on{
+    background:rgba(22,163,74,.08);
+    color:#15803d;
+    border-color:rgba(22,163,74,.3);
+}
+.status-blocked{
+    background:rgba(220,38,38,.06);
+    color:#b91c1c;
+    border-color:rgba(220,38,38,.25);
+}
+.status-pending{
+    background:rgba(245,158,11,.06);
+    color:#b45309;
+    border-color:rgba(245,158,11,.3);
+}
+
+/* Tabla */
+
+.users-table-scroll{
+    width:100%;
+    overflow-x:auto;
+    margin-top:4px;
+}
+
+.users-table{
+    width:100%;
+    border-collapse:collapse;
+    font-family:'Blinker',sans-serif;
+    font-size:14px;
+    background:#fff;
+}
+
+.users-table thead{
+    background:#578fce;
+    color:#fff;
+}
+.users-table th,
+.users-table td{
+    padding:10px 12px;
+    text-align:left;
+    border-bottom:1px solid rgba(15,23,42,.08);
+    white-space:nowrap;
+}
+.users-table th{
+    font-weight:700;
+    font-size:13px;
+}
+.users-table tbody tr:nth-child(even){
+    background:#f9fafb;
+}
+.users-table tbody tr:hover{
+    background:#eff6ff;
+}
+
+/* Columna de acciones */
+
+.users-actions-header{
+    width:230px;
+}
+
+.users-actions-cell{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+}
+
+/* Botones de tabla (usa el mismo concepto que en otras vistas) */
+
+.table-action{
+    border-radius:999px;
+    border:0;
+    padding:6px 12px;
+    font-family:'Blinker',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    background:#e5e7eb;
+    color:#111827;
+    transition:transform .08s ease, filter .12s ease, background .12s ease;
+}
+.table-action:hover{
+    filter:brightness(1.05);
+}
+.table-action:active{
+    transform:scale(.97);
+}
+
+/* Variantes según acción */
+
+.users-edit{
+    background:#2563eb;
+    color:#fff;
+}
+.users-edit:hover{filter:brightness(1.07);}
+
+.users-block{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+.users-block:hover{filter:brightness(1.05);}
+
+.users-unblock{
+    background:#dcfce7;
+    color:#15803d;
+}
+.users-unblock:hover{filter:brightness(1.05);}
+
+.users-verify{
+    background:#fef3c7;
+    color:#b45309;
+}
+.users-verify:hover{filter:brightness(1.05);}
+
+/* Leyenda de estados */
+
+.users-status-legend{
+    margin-top:10px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 16px;
+    font-family:'Blinker',sans-serif;
+    font-size:13px;
+    color:#4b5563;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width:960px){
+    .users-summary-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    .users-filters-form{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+
+@media (max-width:720px){
+    .users-wrapper{
+        margin-top:32px;
+    }
+    .users-summary-grid{
+        grid-template-columns:1fr;
+    }
+    .users-filters-form{
+        grid-template-columns:1fr;
+    }
+    .users-table-header-row{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+    .users-actions-header{
+        width:auto;
+    }
+    .users-actions-cell{
+        justify-content:flex-start;
+    }
+}
