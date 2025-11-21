@@ -166,18 +166,18 @@ use App\Http\Controllers\CanchaController;
 Route::middleware('auth')->group(function () {
 
     // 1. Ver mi inventario (READ)
-    Route::get('/admin/canchas', [CanchaController::class, 'index']);
+    Route::get('/admin/canchas', [CanchaController::class, 'index'])->name('admin.canchas.index');
 
     // 2. Crear una cancha (CREATE)
-    Route::get('/admin/canchas/crear', [CanchaController::class, 'store']);
+    Route::get('/admin/canchas/crear', [CanchaController::class, 'store'])->name('admin.canchas.create');
 
     // 3. Editar una cancha (UPDATE)
     // (Cambia el '2' por el ID de la cancha que quieras editar)
-    Route::get('/admin/canchas/editar/{id}', [CanchaController::class, 'update']);
+    Route::get('/admin/canchas/editar/{id}', [CanchaController::class, 'update'])->name('admin.canchas.edit');
 
     // 4. Borrar una cancha (DELETE)
     // (Cambia el '2' por el ID de la cancha que quieras borrar)
-    Route::get('/admin/canchas/borrar/{id}', [CanchaController::class, 'destroy']);
+    Route::get('/admin/canchas/borrar/{id}', [CanchaController::class, 'destroy'])->name('admin.canchas.destroy');
 
 });
 
