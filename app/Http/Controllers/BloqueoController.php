@@ -21,57 +21,60 @@ class BloqueoController extends Controller
     }
 
     /**
-     * CREATE (Crear): Crea un nuevo bloqueo de mantenimiento.
+     * 1. MOSTRAR FORMULARIO (GET)
      */
-    public function store()
+    public function create()
     {
         $complejo = $this->getAdminComplex();
-        if (!$complejo) {
-            return response()->json(['error' => 'No tienes un complejo asignado.'], 403);
-        }
+        if (!$complejo) abort(403);
 
-        // --- Datos de prueba (en la vida real vendrían de un formulario) ---
-        $id_cancha_a_bloquear = 1; 
-        $fecha_inicio_bloqueo = Carbon::today()->setHour(21)->setMinute(0);
-        $fecha_fin_bloqueo    = Carbon::today()->setHour(22)->setMinute(0);
-        $motivo_bloqueo       = "Mantenimiento Eléctrico";
+        $canchas = $complejo->canchas; 
 
-        // 1. VERIFICAR PERMISO
-        // Validamos que la cancha que intenta bloquear (ID 1) sea suya.
-        $cancha = Canchas::find($id_cancha_a_bloquear);
-        if (!$cancha || $cancha->id_complejo !== $complejo->id) {
-            return response()->json(['error' => 'Esta cancha no existe o no te pertenece.'], 404);
-        }
+        return view('admin-Cancha.bloqueos', compact('canchas'));
+    }
 
-        // 2. VERIFICAR CONFLICTOS DE RESERVAS
-        // Buscamos si ya existe una RESERVA de un cliente en ese horario.
-        $conflictoReserva = Reservacion::where('cancha_id', $id_cancha_a_bloquear)
-            ->where(function ($query) use ($fecha_inicio_bloqueo, $fecha_fin_bloqueo) {
-                // Lógica para detectar empalmes
-                $query->where('hora_inicio', '<', $fecha_fin_bloqueo)
-                      ->where('hora_fin', '>', $fecha_inicio_bloqueo);
-            })
-            ->where('reservacion_estatus', '!=', 'Cancelada')
-            ->exists();
+    /**
+     * 2. GUARDAR BLOQUEO (POST)
+     */
+    public function store(Request $request)
+    {
+        $complejo = $this->getAdminComplex();
 
-        if ($conflictoReserva) {
-            return response()->json([
-                'error' => 'No puedes bloquear este horario. Ya existe una reserva de cliente.'
-            ], 409); 
-        }
-
-        // 3. CREAR EL BLOQUEO
-        $bloqueo = Admin_bloqueos ::create([
-            'cancha_id'          => $id_cancha_a_bloquear,
-            'creada_por' => Auth::id(), 
-            'hora_inicio'       => $fecha_inicio_bloqueo,
-            'hora_fin'          => $fecha_fin_bloqueo,
-            'rason'             => $motivo_bloqueo,
+        // Validación
+        $request->validate([
+            'cancha_id'    => 'required|exists:canchas_tabla,id',
+            'fecha_inicio' => 'required|date|after_or_equal:today',
+            'hora_inicio'  => 'required',
+            'hora_fin'     => 'required|after:hora_inicio',
+            'motivo'       => 'required|string|max:255'
         ]);
 
-        return response()->json([
-            'mensaje' => '¡Horario bloqueado por mantenimiento con éxito!',
-            'bloqueo' => $bloqueo
-        ], 201);
+        // Unir fecha y hora con Carbon
+        $inicio = Carbon::parse($request->fecha_inicio . ' ' . $request->hora_inicio);
+        $fin    = Carbon::parse($request->fecha_inicio . ' ' . $request->hora_fin);
+
+        // Validar conflicto con Reservas existentes
+        $conflicto = Reservacion::where('cancha_id', $request->cancha_id)
+            ->where('reservacion_estatus', '!=', 'Cancelada')
+            ->where(function ($query) use ($inicio, $fin) {
+                $query->where('hora_inicio', '<', $fin)
+                      ->where('hora_fin', '>', $inicio);
+            })->exists();
+
+        if ($conflicto) {
+            return back()->withErrors(['error' => 'No se puede bloquear: Ya hay reservas en ese horario.']);
+        }
+
+        // Crear Bloqueo
+        Admin_bloqueos::create([
+            'cancha_id'          => $request->cancha_id,
+            'creada_por' => Auth::id(),
+            'hora_inicio'        => $inicio,
+            'hora_fin'           => $fin,
+            'rason'             => $request->motivo
+        ]);
+
+        return redirect('/mi-dashboard')
+            ->with('success', 'Bloqueo de mantenimiento creado exitosamente.');
     }
 }

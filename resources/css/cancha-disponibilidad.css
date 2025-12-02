@@ -1,0 +1,273 @@
+/* =========================================
+   ESTILOS ESPECÍFICOS: RESERVA / HORARIOS
+   ========================================= */
+
+/* Fondo solo para esta página */
+body {
+    background: #f3f6fb;
+}
+
+/* Main que envuelve hero + disponibilidad */
+.availability-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding-bottom: 40px;
+}
+
+/* Contenedor de la sección de disponibilidad */
+.availability-wrapper {
+    width: 92%;
+    max-width: 1200px;
+    margin: 0 auto 0;
+    padding: 24px 20px 32px;
+    background: #f7f9fd;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, .08);
+    border: 1px solid rgba(148, 163, 184, .4);
+    /* Para que suba un poquito sobre el carrusel si quieres */
+    position: relative; 
+    z-index: 10;
+    margin-top: -30px; 
+}
+
+/* Encabezado de disponibilidad */
+.availability-header {
+    text-align: left;
+    margin-bottom: 20px;
+}
+.availability-header h2 {
+    font-family: 'Audiowide', system-ui, sans-serif;
+    font-size: 26px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #0b0f19;
+    margin: 0 0 6px;
+}
+.availability-header p {
+    font-size: 15px;
+    color: #4b5563;
+    margin: 0 0 14px;
+}
+
+/* Grid principal: calendario + horarios */
+.availability-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+/* Tarjetas internas (usan base .card de app.css pero añaden padding) */
+.calendar-card,
+.slots-card {
+    padding: 18px 18px 20px;
+}
+
+/* Encabezado de tarjeta tipo pastilla */
+.detail-card-header {
+    margin-bottom: 14px;
+}
+.detail-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 22px;
+    border-radius: 999px;
+    background: var(--grad); /* Usa la variable de app.css */
+    color: #fff;
+    font-family: 'Blinker', sans-serif;
+    font-size: 15px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+/* ===== CALENDARIO ===== */
+.calendar-body {
+    border-radius: 14px;
+    background: #f9fbff;
+    padding: 10px 12px 14px;
+    border: 1px solid rgba(148, 163, 184, .6);
+}
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+.cal-month {
+    font-weight: 700;
+    font-size: 14px;
+    color: #111827;
+    text-transform: capitalize;
+}
+.cal-nav {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    border: 0;
+    background: var(--blue);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .2);
+    transition: transform .08s ease, filter .12s ease;
+}
+.cal-nav:hover { filter: brightness(1.08); }
+.cal-nav:active { transform: scale(.96); }
+
+/* Tabla calendario */
+.calendar {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 4px;
+}
+.calendar th, .calendar td {
+    width: 14.285%;
+    padding: 4px 0;
+}
+.calendar th { font-weight: 700; color: #64748b; }
+.calendar td {
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background .12s ease, color .12s ease, box-shadow .12s ease;
+}
+.calendar td:hover:not(.disabled) {
+    background: #e0efff;
+    transform: translateY(-1px);
+}
+.calendar td.today {
+    font-weight: 700;
+    color: var(--blue);
+    border: 1px solid var(--blue);
+}
+.calendar td.active {
+    background: var(--blue);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .18);
+}
+.calendar td.disabled {
+    color: #cbd5e1;
+    pointer-events: none;
+}
+.calendar-hint {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #6b7280;
+    text-align: center;
+}
+
+/* ===== HORARIOS ===== */
+.slots-body { padding: 4px 2px 2px; }
+.selected-date {
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: #111827;
+}
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+/* Botones de horario */
+.slot-btn {
+    border-radius: 999px;
+    padding: 7px 10px;
+    border: 1px solid transparent;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .12s ease;
+}
+/* Libre */
+.slot-btn.free {
+    background: #f3f8ff;
+    color: #111827;
+    border-color: #bfd3f5;
+}
+/* Ocupado */
+.slot-btn.taken {
+    background: #e5e7eb;
+    color: #6b7280;
+    border-color: #d1d5db;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+/* Seleccionado */
+.slot-btn.selected {
+    background: #22c55e;
+    color: #ffffff;
+    border-color: #16a34a;
+    box-shadow: 0 10px 20px rgba(34, 197, 94, .38);
+}
+.slot-btn.free:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(15, 23, 42, .18);
+}
+
+/* Leyenda de horarios */
+.slots-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 11px;
+    color: #6b7280;
+    justify-content: center;
+}
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+}
+.badge.free { background: #f3f8ff; color: #111827; border-color: #bfd3f5; }
+.badge.taken { background: #e5e7eb; color: #4b5563; border-color: #d1d5db; }
+.badge.selected { background: #22c55e; color: #ffffff; border-color: #16a34a; }
+
+/* ===== BOTÓN CONFIRMAR ===== */
+.reserve-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.reserve-btn {
+    min-width: 220px;
+    height: 50px;
+    border-radius: 999px;
+    border: 0;
+    cursor: pointer;
+    background: linear-gradient(90deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+    color: #fff;
+    font-family: 'Blinker', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 22px rgba(22, 163, 74, .45);
+    transition: transform .08s ease, filter .12s ease;
+}
+.reserve-btn:disabled {
+    background: #cbd5e1;
+    box-shadow: none;
+    cursor: not-allowed;
+    filter: grayscale(1);
+}
+.reserve-btn:hover:not(:disabled) { filter: brightness(1.05); }
+.reserve-btn:active:not(:disabled) { transform: scale(.97); }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .availability-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+    .availability-wrapper { padding: 18px 14px 26px; }
+}

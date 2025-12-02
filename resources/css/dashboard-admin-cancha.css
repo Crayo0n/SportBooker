@@ -1,0 +1,116 @@
+
+body { background-color: #f1f5f9; }
+
+.admin-container {
+    max-width: 1400px; 
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Header con métricas */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #cbd5e1;
+    padding-bottom: 20px;
+}
+
+.admin-title h1 {
+    font-family: 'Audiowide', sans-serif;
+    color: #0f172a;
+    font-size: 28px;
+    margin: 0;
+}
+.admin-title p { color: #64748b; margin: 5px 0 0; }
+
+/* Tarjetas de Métricas */
+.stats-row {
+    display: flex;
+    gap: 20px;
+}
+.stat-card {
+    background: #fff;
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    min-width: 180px;
+}
+.stat-label { font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase; }
+.stat-value { font-size: 24px; color: #004f7c; font-weight: 800; margin-top: 5px; }
+
+/* TABLA DE RESERVAS */
+.table-container {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    overflow: hidden; 
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+}
+
+.admin-table th {
+    background: #f8fafc;
+    text-align: left;
+    padding: 16px 20px;
+    font-weight: 700;
+    color: #475569;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.admin-table tr:hover { background: #f8fafc; }
+
+/* Elementos dentro de la tabla */
+.user-info { display: flex; flex-direction: column; }
+.user-name { font-weight: 600; color: #0f172a; }
+.user-sub { font-size: 12px; color: #64748b; }
+
+.cancha-badge {
+    background: #e0f2fe;
+    color: #0284c7;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+/* Badges de Estatus  */
+.status-pill {
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.status-confirmada { background: #dcfce7; color: #166534; }
+.status-cancelada { background: #fee2e2; color: #991b1b; }
+
+/* Botones de Acción */
+.btn-action-cancel {
+    border: 1px solid #ef4444;
+    background: transparent;
+    color: #ef4444;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-action-cancel:hover { background: #ef4444; color: white; }
+
+.empty-state { text-align: center; padding: 50px; color: #64748b; }

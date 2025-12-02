@@ -28,12 +28,10 @@ class AdminAbonoController extends Controller
                 $query->where('id_complejo', $complejo->id);
             })
             ->with(['user', 'cancha']) 
+            ->orderBy('created_at', 'asc')
             ->get();
 
-        return response()->json([
-            'mensaje' => 'Solicitudes de abono pendientes para ' . $complejo->nombre,
-            'solicitudes' => $solicitudes
-        ]);
+        return view('admin-Cancha.solicitudes-equipo', compact('solicitudes', 'complejo'));
     }
 
     /**
@@ -114,5 +112,18 @@ class AdminAbonoController extends Controller
         return response()->json([
             'mensaje' => '¡Abono Aprobado! Se generaron ' . $reservasCreadas . ' reservas nuevas.'
         ]);
+    }
+
+
+    public function reject($id)
+    {
+        $solicitud = Reservaciones_Equipo::findOrFail($id);
+        
+        // Aquí podrías validar que la solicitud pertenezca a tu complejo...
+
+        $solicitud->estatus = 'Rechazada'; // O el nombre que uses en tu BD
+        $solicitud->save();
+
+        return redirect()->back()->with('success', 'Solicitud rechazada correctamente.');
     }
 }

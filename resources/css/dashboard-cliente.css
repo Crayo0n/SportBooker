@@ -1,0 +1,175 @@
+
+body {
+    background-color: #f3f6fb;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.dashboard-header {
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 15px;
+}
+
+.dashboard-header h1 {
+    font-family: 'Audiowide', sans-serif;
+    color: #004f7c;
+    font-size: 32px;
+    margin: 0;
+}
+
+.dashboard-header p {
+    color: #64748b;
+    margin-top: 5px;
+    font-size: 16px;
+}
+
+/* GRID DE RESERVAS */
+.reservas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+/* TARJETA DE RESERVA */
+.reserva-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #f1f5f9;
+}
+
+.reserva-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Encabezado de la tarjeta */
+.card-top {
+    padding: 15px 20px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.date-badge {
+    font-family: 'Blinker', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Estatus */
+.status-pill {
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-confirmada {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.status-cancelada {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.status-pendiente {
+    background-color: #fef9c3;
+    color: #854d0e;
+    border: 1px solid #fde047;
+}
+
+/* Cuerpo de la tarjeta */
+.card-body {
+    padding: 20px;
+}
+
+.cancha-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 5px 0;
+}
+
+.complejo-name {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #334155;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #64748b;
+}
+
+.price-tag {
+    font-size: 18px;
+    font-weight: 700;
+    color: #004f7c;
+}
+
+/* Acciones  */
+.card-actions {
+    padding: 15px 20px;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-cancel {
+    background: white;
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+    background: #fef2f2;
+    color: #ef4444;
+    border-color: #fecaca;
+}
+
+/* Estado vacío */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.empty-state h3 { color: #004f7c; margin-bottom: 10px; }
+.empty-state p { color: #64748b; margin-bottom: 20px; }

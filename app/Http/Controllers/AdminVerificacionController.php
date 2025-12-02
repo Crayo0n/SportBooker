@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Documentos_Usuario;
+use Illuminate\Support\Facades\Storage;
 
 class AdminVerificacionController extends Controller
 {
@@ -16,13 +17,10 @@ class AdminVerificacionController extends Controller
     {
         $usuariosPendientes = User::where('status', 'PendienteVerificacion')
                                   ->with('documents') 
+                                  ->orderBy('created_at', 'asc')
                                   ->get();
 
-        return response()->json([
-            'mensaje' => 'Cola de verificación cargada',
-            'cantidad' => $usuariosPendientes->count(),
-            'usuarios' => $usuariosPendientes
-        ]);
+        return view('superadmin.verificacion', compact('usuariosPendientes'));
     }
 
     /**
@@ -31,28 +29,45 @@ class AdminVerificacionController extends Controller
      */
     public function aprobar($id)
     {
-        // Buscamos al usuario por ID
-        $usuario = User::find($id);
-
-        if (!$usuario) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
-        }
-
-        // Validamos que realmente esté pendiente (opcional, pero buena práctica)
-        if ($usuario->status !== 'PendienteVerificacion') {
-            return response()->json(['mensaje' => 'Este usuario ya fue procesado antes.'], 400);
-        }
-
-        // --- LA ACCIÓN DE APROBAR ---
+        $usuario = User::findOrFail($id);
         $usuario->status = 'Aprobado';
-        $usuario->save(); // Guardamos el cambio en la BD
+        $usuario->save();
 
-        // (Aquí podrías disparar un envío de correo notificando al usuario)
-
-        return response()->json([
-            'mensaje' => 'Usuario aprobado exitosamente.',
-            'usuario_id' => $usuario->id,
-            'nuevo_status' => $usuario->status
-        ]);
+        return redirect()->route('superadmin.verificacion.index')
+            ->with('success', 'Usuario ' . $usuario->nombre . ' aprobado correctamente.');
     }
+
+    /**
+     * RECHAZAR USUARIO (NUEVO)
+     */
+    public function rechazar($id)
+    {
+        $usuario = User::findOrFail($id);
+        // Aquí podríamos borrar los documentos o marcarlo como Rechazado
+        $usuario->status = 'Rechazado';
+        $usuario->save();
+
+        return redirect()->route('superadmin.verificacion.index')
+            ->with('error', 'Usuario ' . $usuario->nombre . ' ha sido rechazado.');
+    }
+
+    /**
+     * DESCARGAR/VER DOCUMENTO SEGURO
+     */
+    public function descargarDocumento($id)
+{
+    $documento = Documentos_Usuario::findOrFail($id);
+
+    // 1. Validamos que la ruta NO sea nula
+    if (empty($documento->file_path)) {
+        abort(404, 'Error: La ruta del archivo está vacía en la base de datos.');
+    }
+
+    // 2. Validamos que el archivo exista en el disco
+    if (!Storage::disk('local')->exists($documento->file_path)) {
+        abort(404, 'El archivo físico no se encuentra en el servidor.');
+    }
+
+    return Storage::disk('local')->response($documento->file_path);
+}
 }

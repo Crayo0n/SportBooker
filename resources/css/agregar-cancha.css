@@ -1,0 +1,73 @@
+/* Estilos para formularios del Admin */
+.admin-form-container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.form-header {
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+}
+
+.form-header h2 {
+    color: #004f7c;
+    font-family: 'Audiowide', sans-serif;
+    margin: 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 15px;
+    background-color: #f8fafc;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-color: #004f7c;
+    outline: none;
+    background-color: #fff;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-cancel {
+    text-decoration: none;
+    padding: 10px 20px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.btn-save {
+    background: #004f7c;
+    color: white;
+    border: 0;
+    padding: 10px 30px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.btn-save:hover { background: #003855; }

@@ -1,51 +1,53 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-    </div>
+@extends('layouts.app')
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@section('title', 'Recuperar Contraseña')
 
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
+@section('content')
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-
-        <div id="login-modal" class="login-overlay">
-        <div class="login-modal-content">
-            <a href="#" class="login-close-btn">&times;</a>
-            <img src="/img/logo-queretaro.png" alt="Logo Querétaro" class="login-logo">
+    <div class="auth-page-wrapper">
+        
+        <div class="auth-static-card">
             
-            <form method="POST" action="{{ route('login') }}">
+            <div class="auth-header">
+                <img src="/images/v118_43.png" alt="SportBooker Logo" class="auth-logo">
+            </div>
+
+            <p style="color: #666; font-size: 15px; line-height: 1.5; margin-bottom: 25px; text-align: center;">
+                ¿Olvidaste tu contraseña? No hay problema. Simplemente déjanos saber tu dirección de correo electrónico y te enviaremos un enlace para restablecerla.
+            </p>
+
+            @if (session('status'))
+                <div style="background: #dcfce7; color: #166534; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 14px; border: 1px solid #bbf7d0;">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div style="background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 14px;">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('password.email') }}">
                 @csrf
-                <div class="form-group">
-                    <input type="email" name="email" placeholder="Correo Electrónico" required>
+                
+                <div class="auth-field" style="margin-bottom: 25px;">
+                    <label class="auth-label">Correo Electrónico</label>
+                    <input type="email" name="email" class="auth-input" value="{{ old('email') }}" placeholder="tu@correo.com" required autofocus>
                 </div>
-                <div class="form-group">
-                    <input type="password" name="password" placeholder="Contraseña" required>
+
+                <div class="auth-actions">
+                    <div class="auth-links">
+                        <a href="{{ route('login') }}" class="auth-link">Volver a Iniciar Sesión</a>
+                    </div>
+                    
+                    <button type="submit" class="auth-submit" style="width: auto; min-width: 150px; font-size: 18px;">
+                        ENVIAR ENLACE
+                    </button>
                 </div>
-                
-                <a href="{{ route('password.request') }}" class="forgot-password">Olvidé mi contraseña</a>
-                
-                <a href="{{ route('register.choice') }}" class="register-link">¿No tienes cuenta? Regístrate aquí</a>
-                
-                <button type="submit" class="btn">Entrar</button>
             </form>
         </div>
+
     </div>
-    </form>
 
-
-    
-</x-guest-layout>
+@endsection

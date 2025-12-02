@@ -27,71 +27,84 @@ class CanchaController extends Controller
     {
         $complejo = $this->getAdminComplex();
         if (!$complejo) {
-            return response()->json(['error' => 'No tienes un complejo asignado.'], 403);
+            return view('dashboard.admin-empty');
         }
 
         $canchas = $complejo->canchas; 
 
-        return response()->json([
-            'mensaje' => 'Canchas de ' . $complejo->nombre,
-            'total' => $canchas->count(),
-            'canchas' => $canchas
-        ]);
+        return view('admin-Cancha.index', compact('canchas', 'complejo'));
+    }
+
+
+    public function create()
+    {
+        return view('admin-Cancha.crear-cancha');
     }
 
     /**
      * CREATE: Crea una nueva cancha ASIGNADA a este admin.
      */
-    public function store()
+    public function store(Request $request)
     {
         $complejo = $this->getAdminComplex();
-        if (!$complejo) {
-            return response()->json(['error' => 'No tienes un complejo asignado.'], 403);
-        }
 
-        // Datos de prueba (en la vida real vendrían de un formulario)
-        $datosPrueba = [
-            'id_complejo' => $complejo->id, 
-            'nombre' => 'Cancha de Voleibol (Test)',
-            'tipo_deporte' => 'Voleibol',
-            'precio_por_hora' => 250.00,
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'tipo_deporte' => 'required|string',
+            'precio_por_hora' => 'required|numeric|min:0',
+            'descripcion' => 'nullable|string',
+            // 'imagen' => 'nullable|image' (Lo implementaremos después si quieres)
+        ]);
+
+        Canchas::create([
+            'id_complejo' => $complejo->id,
+            'nombre' => $request->nombre,
+            'tipo_deporte' => $request->tipo_deporte,
+            'precio_por_hora' => $request->precio_por_hora,
+            'descripcion' => $request->descripcion,
             'status' => 'Disponible'
-        ];
+        ]);
 
-        $nuevaCancha = Canchas::create($datosPrueba);
-
-        return response()->json([
-            'mensaje' => 'Nueva cancha creada con éxito',
-            'cancha' => $nuevaCancha
-        ], 201);
+        return redirect()->route('admin.canchas.index')->with('success', 'Cancha creada exitosamente.');
     }
 
     /**
      * UPDATE : Edita una cancha específica.
      */
-    public function update($id)
+    public function edit($id)
     {
         $complejo = $this->getAdminComplex();
-        $cancha = Canchas::find($id);
+        $cancha = Canchas::findOrFail($id);
 
-        if (!$cancha) {
-            return response()->json(['error' => 'Esa cancha no existe.'], 404);
-        }
-
-        // Checamos si la cancha (ej. ID 5) pertenece al complejo del admin logueado
+        // Seguridad: Verificar propiedad
         if ($cancha->id_complejo !== $complejo->id) {
-            return response()->json(['error' => 'No tienes permiso para editar esta cancha.'], 403);
+            abort(403, 'No tienes permiso para editar esta cancha.');
         }
 
-        // Datos de prueba para actualizar
-        $cancha->nombre = 'Cancha de Voleibol (EDITADA)';
-        $cancha->precio_por_hora = 300.00;
-        $cancha->save();
+        return view('admin-Cancha.editar-cancha', compact('cancha'));
+    }
 
-        return response()->json([
-            'mensaje' => 'Cancha actualizada con éxito',
-            'cancha' => $cancha
+
+    /**
+     * 5. ACTUALIZAR CANCHA
+     */
+    public function update(Request $request, $id)
+    {
+        $cancha = Canchas::findOrFail($id);
+        $complejo = $this->getAdminComplex();
+
+        if ($cancha->id_complejo !== $complejo->id) { abort(403); }
+
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'tipo_deporte' => 'required|string',
+            'precio_por_hora' => 'required|numeric',
+            'status' => 'required|string'
         ]);
+
+        $cancha->update($request->only(['nombre', 'tipo_deporte', 'precio_por_hora', 'descripcion', 'status']));
+
+        return redirect()->route('admin.canchas.index')->with('success', 'Cancha actualizada.');
     }
 
     /**
@@ -99,30 +112,43 @@ class CanchaController extends Controller
      */
     public function destroy($id)
     {
+        $cancha = Cancha::findOrFail($id);
         $complejo = $this->getAdminComplex();
-        $cancha = Canchas::find($id);
 
-        if (!$cancha) {
-            return response()->json(['error' => 'Esa cancha no existe.'], 404);
-        }
+        if ($cancha->id_complejo !== $complejo->id) { abort(403); }
 
-        if ($cancha->id_complejo !== $complejo->id) {
-            return response()->json(['error' => 'No tienes permiso para borrar esta cancha.'], 403);
-        }
-
-        //  No borrar si tiene reservas futuras
+        // Regla: No borrar si hay reservas futuras
         $tieneReservas = Reservacion::where('cancha_id', $id)
-                            ->where('hora_inicio', '>', now()) 
+                            ->where('hora_inicio', '>', now())
+                            ->where('reservacion_estatus', '!=', 'Cancelada')
                             ->exists();
         
         if ($tieneReservas) {
-            return response()->json([
-                'error' => 'No puedes borrar esta cancha, tiene reservas futuras activas.'
-            ], 400);
+            return back()->with('error', 'No puedes eliminar esta cancha porque tiene reservas futuras activas.');
         }
 
         $cancha->delete();
 
-        return response()->json(['mensaje' => 'Cancha eliminada con éxito.']);
+        return redirect()->route('admin.canchas.index')->with('success', 'Cancha eliminada.');
     }
+
+
+    public function catalogo()
+    {
+        // 1. Traemos todas las canchas que estén "Disponibles"
+        $canchas = Canchas::where('status', 'Disponible')->with('complejo')->get();
+
+        // 2. Retornamos la vista (que crearemos en el siguiente paso)
+        return view('cancha-detalle', compact('canchas'));
+    }
+
+    public function detalle()
+    {
+        // Traemos las canchas activas
+        $canchas = Canchas::where('status', 'Disponible')->get();
+
+        // Retornamos la vista pasando los datos
+        return view('cancha-detalle', compact('canchas'));
+    }
+
 }

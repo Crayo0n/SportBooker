@@ -8,9 +8,17 @@ use App\Models\Roles;
 use App\Models\Documentos_Usuario; 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage; 
+use Illuminate\Support\Facades\DB; 
 
 class RegistroController extends Controller
 {
+    public function showOcasional()
+    {
+        return view('auth.registro-usuario-ocasional');
+    }
+
+
+
     public function storeOcasional(Request $request)
     {
         // 1. VALIDACIÓN (Backend puro)
@@ -68,12 +76,82 @@ class RegistroController extends Controller
             ]);
         }
 
-        // 4. RESPUESTA JSON
-        return response()->json([
-            'mensaje' => 'Usuario registrado y documentos subidos.',
-            'usuario_id' => $user->id,
-            'status' => $user->status,
-            'documentos_guardados' => 2
+        // 4. REDIRECCIONAR CON MENSAJE
+        return redirect()->route('login')
+            ->with('status', '¡Registro exitoso! Tu cuenta está en revisión. Te notificaremos cuando sea aprobada.');
+    }
+
+
+    /**
+     * MOSTRAR FORMULARIO RECURRENTE
+     */
+    public function showRecurrente()
+    {
+        return view('auth.registrer-recurrente');
+    }
+
+    /**
+     * PROCESAR REGISTRO RECURRENTE
+     */
+    public function storeRecurrente(Request $request)
+    {
+        // 1. VALIDACIÓN EXTENDIDA
+        $request->validate([
+            'nombre'      => 'required|string|max:255',
+            'apellido'    => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email',
+            'password'    => 'required|min:8|confirmed',
+            'telefono'    => 'required',
+            'curp'        => 'required|string|size:18|unique:users,curp', 
+            
+            // Documentos específicos del Recurrente
+            'archivo_ine'        => 'required|file|max:5120',
+            'archivo_dom'        => 'required|file|max:5120',
+            'archivo_oficio'     => 'required|file|max:5120',
+            'archivo_roster'     => 'required|file|max:5120',
+            'archivo_medico'     => 'required|file|max:10240', 
         ]);
+
+        DB::transaction(function () use ($request) {
+        
+        $rol = \App\Models\Roles::where('nombre', 'ClienteRecurrente')->first();
+
+        // Crear Usuario
+        $user = \App\Models\User::create([
+            'role_id'  => $rol->id ?? 4,
+            'nombre'   => $request->nombre,
+            'apellido' => $request->apellido,
+            'email'    => $request->email,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'phone_number' => $request->telefono,
+            'curp'     => $request->curp,
+            'status'   => 'PendienteVerificacion'
+        ]);
+
+        // Guardar Archivos
+        $documentos = [
+            'archivo_ine'    => 'INE',
+            'archivo_dom'    => 'ComprobanteDomicilio',
+            'archivo_oficio' => 'OficioPeticion',
+            'archivo_roster' => 'RosterLiga',
+            'archivo_medico' => 'CertificadoMedico'
+        ];
+
+        foreach ($documentos as $inputName => $tipoDoc) {
+            if ($request->hasFile($inputName)) {
+                $path = $request->file($inputName)->store('documentos', 'local');
+                
+                Documentos_Usuario::create([
+                    'user_id' => $user->id,
+                    'tipo' => $tipoDoc, 
+                    'file_path' => $path, 
+                ]);
+            }
+        }
+
+    }); 
+
+        return redirect()->route('login')
+            ->with('status', '¡Solicitud de equipo enviada! Revisaremos tu documentación detalladamente.');
     }
 }

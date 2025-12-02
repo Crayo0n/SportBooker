@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Reservacion;
 use App\Models\Complejos;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -36,11 +37,7 @@ class DashboardController extends Controller
                             ->orderBy('hora_inicio', 'desc') // O 'fecha_inicio'
                             ->get();
 
-            return response()->json([
-                'rol' => $rolNombre,
-                'mensaje' => 'Bienvenido a tu panel de cliente.',
-                'mis_reservas' => $misReservas
-            ]);
+            return view('dashboards.cliente', compact('misReservas'));
         }
 
         // --- CASO 2: ADMIN DE CANCHA ---
@@ -48,38 +45,33 @@ class DashboardController extends Controller
             
             $miComplejo = Complejos::where('admin_user_id', $user->id)->first();
 
+            // Si no tiene complejo
             if (!$miComplejo) {
-                return response()->json(['mensaje' => 'Aún no tienes un complejo asignado.'], 200);
+                return view('dashboards.admin-cancha', [
+                    'miComplejo' => null,
+                    'reservas' => collect([]), // Colección vacía
+                    'totalReservas' => 0,
+                    'ingresosPendientes' => 0
+                ]);
             }
 
             $reservasDelComplejo = Reservacion::whereHas('cancha', function ($query) use ($miComplejo) {
-                // OJO: id_complejo según tu BD
                 $query->where('id_complejo', $miComplejo->id); 
             })
             ->with(['user', 'cancha']) 
             ->orderBy('hora_inicio', 'asc')
             ->get();
 
-            return response()->json([
-                'rol' => $rolNombre,
-                'mensaje' => 'Panel de Administración de: ' . $miComplejo->nombre,
-                'reservas_totales' => $reservasDelComplejo->count(),
-                'calendario' => $reservasDelComplejo
-            ]);
+            $reservas = $reservasDelComplejo;
+
+            $totalReservas = $reservas->count();
+            $ingresosPendientes = $reservas->where('pago_estatus', '!=', 'Pagado')->sum('precio_total');
+
+            // 4. Retornamos la vista
+            return view('dashboards.admin-cancha', compact('miComplejo', 'reservas', 'totalReservas', 'ingresosPendientes'));
         }
 
-        // --- CASO 3: SUPERADMIN ---
-        if ($rolNombre === 'SuperAdmin') {
-            return response()->json([
-                'rol' => 'SuperAdmin',
-                'mensaje' => 'Panel Maestro',
-                'stats' => [
-                    'usuarios_totales' => User::count(),
-                    'complejos_totales' => Complex::count(),
-                    'reservas_totales' => Reservacion::count(),
-                ]
-            ]);
-        }
+        
 
         // Si llegamos aquí, es porque el nombre del rol no coincidió con los IFs
         return response()->json([

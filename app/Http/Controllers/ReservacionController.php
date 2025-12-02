@@ -13,34 +13,26 @@ class ReservacionController extends Controller
 {
     public function store(Request $request)
     {
-        // MODIFICACIÓN: Intentamos obtener al usuario logueado primero
+        // 1. VALIDAR DATOS DEL FORMULARIO
+        $request->validate([
+            'cancha_id'   => 'required|exists:canchas_tabla,id', // Asegúrate del nombre de tu tabla
+            'fecha'       => 'required|date|after_or_equal:today',
+            'hora_inicio' => 'required', // Viene como "18:00:00"
+        ]);
+
         $usuario = Auth::user();
+        $cancha_id = $request->cancha_id;
 
-        // Si no estás logueado, entonces sí usamos el truco de agarrar al primero
-        if (!$usuario) {
-            $usuario = User::first();
-        }
+        // 2. CONSTRUIR FECHAS CARBON
+        // El formulario manda fecha (2025-11-20) y hora (18:00:00) por separado.
+        // Las unimos.
+        $fecha_inicio = Carbon::parse($request->fecha . ' ' . $request->hora_inicio);
         
-        // Validamos que exista ALGUN usuario
-        if (!$usuario) {
-             return response()->json(['error' => 'No hay usuarios en la BD. Crea uno primero.'], 404);
-        }
+        // Asumimos reserva de 1 hora por defecto (puedes cambiarlo si pides hora fin)
+        $fecha_fin = $fecha_inicio->copy()->addHour();
 
-        $usuario_id = $usuario->id;
-        
-        // ---------------------------------------------------------
-
-        // 1. Simulamos datos de entrada
-        // Intentamos reservar la Cancha 1 (o la primera que encuentres)
-        $cancha_id = 1; 
-        
-        // FECHAS: Para evitar errores de "ya pasó", pondremos la reserva para MAÑANA
-        $fecha_inicio = Carbon::tomorrow()->setHour(1)->setMinute(0)->setSecond(0);
-        $fecha_fin    = Carbon::tomorrow()->setHour(2)->setMinute(0)->setSecond(0);
-        $metodo_pago  = 'EnSitio';
-
-        // 2. VALIDACIÓN DE DISPONIBILIDAD
-        $existeConflicto = Reservacion::where('cancha_id', $cancha_id) 
+        // 3. VALIDACIÓN DE DISPONIBILIDAD (Misma lógica de antes)
+        $existeConflicto = Reservacion::where('cancha_id', $cancha_id)
             ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
                 $query->whereBetween('hora_inicio', [$fecha_inicio, $fecha_fin])
                       ->orWhereBetween('hora_fin', [$fecha_inicio, $fecha_fin])
@@ -53,36 +45,78 @@ class ReservacionController extends Controller
             ->exists();
 
         if ($existeConflicto) {
-            return response()->json(['error' => '¡Lo sentimos! Ese horario ya está ocupado.'], 409);
+            // En lugar de JSON, devolvemos error a la vista
+            return back()->withErrors(['error' => '¡Lo sentimos! Ese horario ya está ocupado.']);
         }
 
-        // 3. Obtener precio
-        $cancha = Canchas::find($cancha_id);
-        
-        // Validación extra por si borraste la cancha
-        if (!$cancha) {
-            return response()->json(['error' => 'La cancha ID 1 no existe. Crea una primero.'], 404);
-        }
+        // 4. PRECIO
+        $cancha = \App\Models\Cancha::find($cancha_id);
+        $precioTotal = $cancha->precio_por_hora; // Por 1 hora
 
-        $horas = $fecha_inicio->diffInHours($fecha_fin);
-        $precioTotal = $cancha->precio_por_hora * $horas;
-
-        // 4. Crear la Reserva
-        $reserva = Reservacion::create([
-            'user_id'             => $usuario_id, // <-- Usamos el ID que obtuvimos arriba
+        // 5. CREAR
+        Reservacion::create([
+            'user_id'             => $usuario->id,
             'cancha_id'           => $cancha_id,
             'hora_inicio'         => $fecha_inicio,
             'hora_fin'            => $fecha_fin,
             'precio_total'        => $precioTotal,
-            'metodo_pago'         => $metodo_pago,
+            'metodo_pago'         => 'EnSitio', // Por defecto
             'pago_estatus'        => 'PendienteEnSitio',
             'reservacion_estatus' => 'Confirmada'
         ]);
 
-        return response()->json([
-            'mensaje' => '¡Reserva creada con éxito!',
-            'usuario' => $usuario->nombre, // Para que veas quién reservó
-            'reserva' => $reserva
-        ]);
+        // 6. REDIRECCIONAR AL DASHBOARD
+        return redirect('/mi-dashboard')->with('success', '¡Reserva confirmada con éxito!');
+    }
+
+    /**
+     * Cancela una reserva si cumple con las reglas.
+     */
+    public function cancel($id)
+    {
+        // 1. Buscar la reserva
+        $reserva = \App\Models\Reservacion::find($id);
+
+        if (!$reserva) {
+            return back()->with('error', 'Reserva no encontrada.');
+        }
+
+        $usuarioLogueado = \Illuminate\Support\Facades\Auth::user();
+
+        $esDuenio = $reserva->user_id === $usuarioLogueado->id;
+
+        $esAdmin = $usuarioLogueado->role->nombre === 'AdminCancha';
+
+       if (!$esDuenio && !$esAdmin) {
+            return back()->with('error', 'No tienes permiso para cancelar esta reserva.');
+        }
+
+        // 4. REGLA DE NEGOCIO (Tiempo límite)
+        // Esta regla solo aplica si eres el CLIENTE. El Admin debería poder cancelar cuando sea.
+        if (!$esAdmin) {
+            // Usamos 'subDay()' para restar un día a la fecha del juego
+            $limiteCancelacion = \Carbon\Carbon::parse($reserva->hora_inicio)->subDay();
+
+            if (now() > $limiteCancelacion) {
+                return back()->with('error', 'Lo sentimos, solo puedes cancelar con 24 horas de anticipación.');
+            }
+        }
+
+        // 4. EJECUTAR CANCELACIÓN
+        //  solo cambiamos su estatus
+        $reserva->reservacion_estatus = 'Cancelada';
+        $reserva->save();
+
+        return back()->with('success', 'La reserva ha sido cancelada correctamente.');
+    }
+
+
+
+
+
+    public function create($id)
+    {
+        $cancha = \App\Models\Canchas::findOrFail($id);
+        return view('reservas.cancha-disponibilidad', compact('cancha'));
     }
 }
