@@ -26,11 +26,7 @@
                 </p>
             </div>
 
-            <div style="margin-top: 15px;">
-                <a href="{{ url('/admin/bloqueos/crear') }}" class="btn" style="background:#b91c1c; text-decoration:none; font-size:14px;">
-                    ⚠️ Bloquear Horario
-                </a>
-            </div>
+            
         </header>
 
         <section class="history-summary-grid">

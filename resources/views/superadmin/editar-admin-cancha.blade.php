@@ -37,7 +37,7 @@
                 </div>
                 <div>
                     <label class="form-label">Teléfono</label>
-                    <input type="tel" name="telefono" class="form-input" value="{{ old('telefono', $admin->telefono) }}" required>
+                    <input type="tel" name="telefono" class="form-input" value="{{ old('telefono', $admin->phone_number) }}" required>
                 </div>
             </div>
 

@@ -112,7 +112,7 @@
                             </div>
                         @else
                             <p class="profile-docs-hint">
-                                No has subido documentos o tu cuenta es de tipo Ocasional básico.
+                                No has subido documentos o tu cuenta es de tipo Admin de Cancha.
                             </p>
                         @endif
                         

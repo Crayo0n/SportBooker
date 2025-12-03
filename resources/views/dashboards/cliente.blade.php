@@ -63,7 +63,7 @@
                                 @if($reserva->metodo_pago == 'EnSitio')
                                     Pago en Taquilla
                                 @else
-                                    Pagado en Línea
+                                    Pago en Taquilla
                                 @endif
                             </span>
                         </div>
