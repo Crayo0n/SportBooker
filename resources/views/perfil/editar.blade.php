@@ -81,7 +81,7 @@
             </div>
 
             <div class="form-actions">
-                <a href="{{ url('/mi-dashboard') }}" class="btn-cancel">Cancelar</a>
+                <a href="{{ url('/perfil') }}" class="btn-cancel">Cancelar</a>
                 <button type="submit" class="btn-save">Guardar Cambios</button>
             </div>
 

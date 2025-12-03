@@ -21,7 +21,7 @@ class AdminAbonoController extends Controller
         $admin = Auth::user();
         $complejo = $admin->complex; 
 
-        // Buscamos solicitudes de abono ('recurringRequests')
+        // Buscamos solicitudes de abono 
         // DONDE la cancha ('cancha') pertenezca a mi complejo
         $solicitudes = Reservaciones_Equipo::where('reservacion_estatus', 'PendienteAprobacion')
             ->whereHas('cancha', function ($query) use ($complejo) {
@@ -41,14 +41,13 @@ class AdminAbonoController extends Controller
     {
         $solicitud = Reservaciones_Equipo::find($id_solicitud);
         if (!$solicitud) {
-            return response()->json(['error' => 'Solicitud no encontrada'], 404);
+            return back()->with('error', 'Solicitud no encontrada.');
         }
 
         $periodo = CarbonPeriod::create($solicitud->fecha_inicio, '1 day', $solicitud->fecha_fin);
 
         // 2. Filtra ese periodo para quedarnos solo con el día de la semana de la solicitud
         $fechasDelAbono = $periodo->filter(function ($date) use ($solicitud) {
-        // '==' es más seguro por si los tipos no coinciden (ej. '2' vs 2)
              return $date->dayOfWeek == $solicitud->dia_semana; 
         });
         
@@ -75,10 +74,13 @@ class AdminAbonoController extends Controller
         }
         
         if (!empty($conflictos)) {
-            return response()->json([
-                'error' => 'Acción bloqueada. No se puede aprobar porque choca con otras reservas/bloqueos.',
-                'fechas_ocupadas' => $conflictos
-            ], 409);
+            
+            // Convertimos el array de fechas conflictivas en un texto legible
+            $listaFechas = implode(', ', $conflictos);
+
+            $mensajeError = 'Acción bloqueada. No se puede aprobar porque el horario choca con otras reservas o bloqueos en las siguientes fechas: ' . $listaFechas;
+
+            return back()->with('error', $mensajeError);
         }
         // --- Fin de la validación ---
 
@@ -109,9 +111,8 @@ class AdminAbonoController extends Controller
         $solicitud->reservacion_estatus = 'Aprobada';
         $solicitud->save();
 
-        return response()->json([
-            'mensaje' => '¡Abono Aprobado! Se generaron ' . $reservasCreadas . ' reservas nuevas.'
-        ]);
+        return redirect()->route('admin-Cancha.solicitudes-equipo')
+            ->with('success', '¡Abono Aprobado! Se generaron ' . $reservasCreadas . ' reservas nuevas en el calendario.');
     }
 
 
@@ -119,9 +120,8 @@ class AdminAbonoController extends Controller
     {
         $solicitud = Reservaciones_Equipo::findOrFail($id);
         
-        // Aquí podrías validar que la solicitud pertenezca a tu complejo...
 
-        $solicitud->estatus = 'Rechazada'; // O el nombre que uses en tu BD
+        $solicitud->estatus = 'Rechazada'; 
         $solicitud->save();
 
         return redirect()->back()->with('success', 'Solicitud rechazada correctamente.');

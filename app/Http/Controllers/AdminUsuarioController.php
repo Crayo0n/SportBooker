@@ -15,8 +15,7 @@ class AdminUsuarioController extends Controller
      */
     public function index()
     {
-        // 1. Buscamos el Rol de Admin de Cancha (ID 2 en tu seeder)
-        // O buscamos por nombre para ser seguros
+        // 1. Buscamos el Rol de Admin de Cancha 
         $rolAdmin = Roles::where('nombre', 'AdminCancha')->first();
 
         // 2. Traemos todos los usuarios con ese rol
@@ -93,7 +92,7 @@ class AdminUsuarioController extends Controller
     public function edit($id)
     {
         $admin = User::findOrFail($id);
-        $complejos = Complejos::all(); // Para poder cambiarlo de complejo si es necesario
+        $complejos = Complejos::all(); 
 
         return view('superadmin.editar-admin-cancha', compact('admin', 'complejos'));
     }
@@ -112,8 +111,8 @@ class AdminUsuarioController extends Controller
             'email'       => 'required|email|unique:users,email,' . $admin->id,
             'telefono'    => 'required',
             'id_complejo' => 'required|exists:complejos_tabla,id',
-            'status'      => 'required|string', // Para activar/desactivar acceso
-            'password'    => 'nullable|min:8',  // Opcional
+            'status'      => 'required|string', 
+            'password'    => 'nullable|min:8',  
         ]);
 
         // 2. Preparar datos a actualizar

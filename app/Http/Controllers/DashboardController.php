@@ -24,17 +24,15 @@ class DashboardController extends Controller
              return response()->json(['error' => 'Usuario sin rol asignado.'], 500);
         }
 
-        // --- CORRECCIÓN AQUÍ: Usamos 'nombre' ---
         $rolNombre = $user->role->nombre; 
-        // ----------------------------------------
 
         // --- CASO 1: CLIENTE ---
         // Asegúrate que estos strings coincidan con lo que tienes en BD
         if ($rolNombre === 'ClienteOcasional' || $rolNombre === 'ClienteRecurrente') {
             
-            $misReservas = Reservacion::where('user_id', $user->id) // O 'id_usuario' según tu BD
+            $misReservas = Reservacion::where('user_id', $user->id) 
                             ->with(['cancha.complejo']) 
-                            ->orderBy('hora_inicio', 'desc') // O 'fecha_inicio'
+                            ->orderBy('hora_inicio', 'desc') 
                             ->get();
 
             return view('dashboards.cliente', compact('misReservas'));
@@ -49,7 +47,7 @@ class DashboardController extends Controller
             if (!$miComplejo) {
                 return view('dashboards.admin-cancha', [
                     'miComplejo' => null,
-                    'reservas' => collect([]), // Colección vacía
+                    'reservas' => collect([]), 
                     'totalReservas' => 0,
                     'ingresosPendientes' => 0
                 ]);
@@ -73,7 +71,6 @@ class DashboardController extends Controller
 
         
 
-        // Si llegamos aquí, es porque el nombre del rol no coincidió con los IFs
         return response()->json([
             'error' => 'Rol no reconocido en el sistema.',
             'rol_detectado' => $rolNombre

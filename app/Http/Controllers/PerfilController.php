@@ -5,13 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Documentos_Usuario;
+use Illuminate\Support\Facades\Storage;
 
 class PerfilController extends Controller
 {
     /**
      * Muestra el formulario con los datos del usuario.
      */
-    public function edit()
+    public function ver()
+    {
+        $user = Auth::user();
+        return view('perfil.perfil', compact('user'));
+    }
+
+    public function editar()
     {
         $user = Auth::user();
         return view('perfil.editar', compact('user'));
@@ -45,5 +53,26 @@ class PerfilController extends Controller
         $user->save();
 
         return back()->with('success', 'Tu perfil ha sido actualizado correctamente.');
+    }
+
+    public function verDocumento($id)
+    {
+        $documento = Documentos_Usuario::findOrFail($id);
+
+        // 1. SEGURIDAD: Verificar que el documento pertenezca al usuario logueado
+        if ($documento->user_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para ver este documento.');
+        }
+
+        // 2. Obtener la ruta del archivo
+        $ruta = $documento->file_path ?? $documento->ruta_archivo;
+
+        // 3. Verificar existencia física
+        if (!$ruta || !Storage::disk('local')->exists($ruta)) {
+            abort(404, 'El archivo no se encuentra en el servidor.');
+        }
+
+        // 4. Devolver el archivo para visualización
+        return Storage::disk('local')->response($ruta);
     }
 }

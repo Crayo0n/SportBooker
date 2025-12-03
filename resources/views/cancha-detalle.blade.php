@@ -89,11 +89,10 @@
             </section>
 
 
-             @if(Auth::user()->role->nombre === 'ClienteOcasional')
                 <div class="reserve-wrapper">
                 <button class="reserve-btn" onclick="iniciarReserva()">Reservar esta Cancha</button>
             </div>
-            @endif
+            
             
         </div>
     </div>

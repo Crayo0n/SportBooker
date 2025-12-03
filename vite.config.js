@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/css/historial-reservas.css',
                 'resources/css/agregar-cancha.css',
                 'resources/css/gestion-administradores.css',
+                'resources/css/perfil.css',
             ],
             refresh: true,
         }),

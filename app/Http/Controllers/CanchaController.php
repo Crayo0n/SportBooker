@@ -12,7 +12,6 @@ class CanchaController extends Controller
 {
     /**
      * Función privada para obtener el complejo del admin logueado.
-     * Esto evita repetir código.
      */
     private function getAdminComplex()
     {
@@ -53,7 +52,6 @@ class CanchaController extends Controller
             'tipo_deporte' => 'required|string',
             'precio_por_hora' => 'required|numeric|min:0',
             'descripcion' => 'nullable|string',
-            // 'imagen' => 'nullable|image' (Lo implementaremos después si quieres)
         ]);
 
         Canchas::create([

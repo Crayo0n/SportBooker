@@ -175,8 +175,11 @@ Route::prefix('superadmin')->name('superadmin.')->group(function () {
 use App\Http\Controllers\PerfilController;
 
 // Rutas de Perfil
-Route::get('/perfil', [PerfilController::class, 'edit'])->name('perfil');
-Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
+Route::get('/perfil', [PerfilController::class, 'ver'])->name('perfil');
+Route::get('/perfil/editar', [PerfilController::class, 'editar'])->name('perfil.editar');
+Route::put('/perfil/editar', [PerfilController::class, 'update'])->name('perfil.update');
+// Ver mis documentos
+Route::get('/perfil/documento/{id}', [PerfilController::class, 'verDocumento'])->name('perfil.documento');
 
 // RUTA PARA CREAR UN SUPERADMIN Y MODIFICAR SU CONTRASEÑA PARA TENERLA CON HASH
 Route::get('/arreglar-password', function () {

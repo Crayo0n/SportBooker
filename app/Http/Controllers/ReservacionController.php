@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Reservacion; 
 use App\Models\Canchas;      
-use App\Models\User;        // Para asignar el usuario
-use Carbon\Carbon;          // Para manejar fechas y horas
+use App\Models\User;        
+use Carbon\Carbon;          
 
 class ReservacionController extends Controller
 {
@@ -15,23 +15,20 @@ class ReservacionController extends Controller
     {
         // 1. VALIDAR DATOS DEL FORMULARIO
         $request->validate([
-            'cancha_id'   => 'required|exists:canchas_tabla,id', // Asegúrate del nombre de tu tabla
+            'cancha_id'   => 'required|exists:canchas_tabla,id', 
             'fecha'       => 'required|date|after_or_equal:today',
-            'hora_inicio' => 'required', // Viene como "18:00:00"
+            'hora_inicio' => 'required', 
         ]);
 
         $usuario = Auth::user();
         $cancha_id = $request->cancha_id;
 
         // 2. CONSTRUIR FECHAS CARBON
-        // El formulario manda fecha (2025-11-20) y hora (18:00:00) por separado.
-        // Las unimos.
         $fecha_inicio = Carbon::parse($request->fecha . ' ' . $request->hora_inicio);
         
-        // Asumimos reserva de 1 hora por defecto (puedes cambiarlo si pides hora fin)
         $fecha_fin = $fecha_inicio->copy()->addHour();
 
-        // 3. VALIDACIÓN DE DISPONIBILIDAD (Misma lógica de antes)
+        // 3. VALIDACIÓN DE DISPONIBILIDAD 
         $existeConflicto = Reservacion::where('cancha_id', $cancha_id)
             ->where(function ($query) use ($fecha_inicio, $fecha_fin) {
                 $query->whereBetween('hora_inicio', [$fecha_inicio, $fecha_fin])
@@ -45,13 +42,12 @@ class ReservacionController extends Controller
             ->exists();
 
         if ($existeConflicto) {
-            // En lugar de JSON, devolvemos error a la vista
             return back()->withErrors(['error' => '¡Lo sentimos! Ese horario ya está ocupado.']);
         }
 
         // 4. PRECIO
-        $cancha = \App\Models\Cancha::find($cancha_id);
-        $precioTotal = $cancha->precio_por_hora; // Por 1 hora
+        $cancha = \App\Models\Canchas::find($cancha_id);
+        $precioTotal = $cancha->precio_por_hora; 
 
         // 5. CREAR
         Reservacion::create([
@@ -60,7 +56,7 @@ class ReservacionController extends Controller
             'hora_inicio'         => $fecha_inicio,
             'hora_fin'            => $fecha_fin,
             'precio_total'        => $precioTotal,
-            'metodo_pago'         => 'EnSitio', // Por defecto
+            'metodo_pago'         => 'EnSitio', 
             'pago_estatus'        => 'PendienteEnSitio',
             'reservacion_estatus' => 'Confirmada'
         ]);
@@ -94,7 +90,6 @@ class ReservacionController extends Controller
         // 4. REGLA DE NEGOCIO (Tiempo límite)
         // Esta regla solo aplica si eres el CLIENTE. El Admin debería poder cancelar cuando sea.
         if (!$esAdmin) {
-            // Usamos 'subDay()' para restar un día a la fecha del juego
             $limiteCancelacion = \Carbon\Carbon::parse($reserva->hora_inicio)->subDay();
 
             if (now() > $limiteCancelacion) {
@@ -103,16 +98,11 @@ class ReservacionController extends Controller
         }
 
         // 4. EJECUTAR CANCELACIÓN
-        //  solo cambiamos su estatus
         $reserva->reservacion_estatus = 'Cancelada';
         $reserva->save();
 
         return back()->with('success', 'La reserva ha sido cancelada correctamente.');
     }
-
-
-
-
 
     public function create($id)
     {
