@@ -178,5 +178,13 @@ use App\Http\Controllers\PerfilController;
 Route::get('/perfil', [PerfilController::class, 'edit'])->name('perfil');
 Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
 
+// RUTA PARA CREAR UN SUPERADMIN Y MODIFICAR SU CONTRASEÑA PARA TENERLA CON HASH
+Route::get('/arreglar-password', function () {
+    $user = User::where('email', 'admin@gmail.com')->first();
+    $user->password = Hash::make('1');
+    $user->save();
+    return "Contraseña encriptada correctamente.";
+});
+
 
 require __DIR__.'/auth.php';
