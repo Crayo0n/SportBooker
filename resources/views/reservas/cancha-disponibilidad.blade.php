@@ -93,7 +93,6 @@
 
 @push('scripts')
 <script>
-    // Aquí irá la lógica de conexión con la API de disponibilidad
     document.addEventListener('DOMContentLoaded', () => {
         const calendarBody = document.getElementById('calendarBody');
         const monthLabel   = document.getElementById('calMonthLabel');
@@ -131,7 +130,6 @@
                     } else {
                         td.textContent = day;
                         
-                        // Formato YYYY-MM-DD
                         let monthStr = (month+1).toString().padStart(2, '0');
                         let dayStr   = day.toString().padStart(2, '0');
                         let dateStr  = `${year}-${monthStr}-${dayStr}`;
@@ -143,7 +141,7 @@
                         todayZero.setHours(0,0,0,0);
                         
                         if(checkDate < todayZero) {
-                            td.classList.add('disabled'); // CSS para gris y no click
+                            td.classList.add('disabled');
                             td.style.opacity = '0.4';
                             td.style.cursor = 'not-allowed';
                         } else {
@@ -168,42 +166,65 @@
             td.classList.add('active');
             selectedDate = dateStr;
             selectedLbl.textContent = dateStr;
-            inputFecha.value = dateStr; // Guardar en formulario
+            inputFecha.value = dateStr; 
             
-            // Cargar horarios reales
             loadSlots(dateStr);
         }
 
-        // --- 3. Cargar Horarios desde la API (Simulado por ahora) ---
-        function loadSlots(date) {
-            slotsGrid.innerHTML = '<p>Cargando disponibilidad...</p>';
+        // --- 3. Cargar Horarios desde la API (REAL) ---
+        async function loadSlots(date) {
+            slotsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#666;">Buscando disponibilidad...</p>';
             confirmBtn.disabled = true;
+            confirmBtn.style.opacity = "0.5";
 
-            // AQUÍ HARÁS LA PETICIÓN FETCH A TU API EN EL FUTURO
-            // fetch(`/api/disponibilidad/${canchaId}?fecha=${date}`) ...
-            
-            // Por ahora, generamos horarios estáticos
-            slotsGrid.innerHTML = '';
-            const horas = [
-                '08:00', '09:00', '10:00', '11:00', 
-                '16:00', '17:00', '18:00', '19:00', '20:00'
-            ];
+            try {
+                // Llamada a la API que creamos
+                const response = await fetch(`/api/disponibilidad/${canchaId}?fecha=${date}`);
+                
+                if (!response.ok) throw new Error('Error en la red');
+                
+                const horasLibres = await response.json();
+                
+                slotsGrid.innerHTML = '';
 
-            horas.forEach(hora => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'slot-btn free';
-                btn.textContent = hora;
-                btn.onclick = () => selectSlot(btn, hora);
-                slotsGrid.appendChild(btn);
-            });
+                if (horasLibres.length === 0) {
+                    slotsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#b91c1c; font-weight:bold;">No hay horarios disponibles para este día.</p>';
+                    return;
+                }
+
+                horasLibres.forEach(hora => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'slot-btn free';
+                    
+                    // Formateamos para mostrar rango (ej. 08:00 - 09:00)
+                    // Asumimos bloques de 1 hora por defecto
+                    let [h, m] = hora.split(':');
+                    let nextH = parseInt(h) + 1;
+                    let nextHStr = nextH.toString().padStart(2, '0');
+                    
+                    btn.textContent = `${hora.substring(0,5)} - ${nextHStr}:00`;
+                    
+                    btn.onclick = () => selectSlot(btn, hora);
+                    slotsGrid.appendChild(btn);
+                });
+
+            } catch (error) {
+                console.error(error);
+                slotsGrid.innerHTML = '<p style="color:red; grid-column: 1/-1; text-align:center;">Error al cargar horarios. Intenta de nuevo.</p>';
+            }
         }
 
         function selectSlot(btn, hora) {
             document.querySelectorAll('.slot-btn.selected').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            inputHora.value = hora + ':00'; // Guardar formato H:i:s
-            confirmBtn.disabled = false; // Habilitar botón de pago
+            
+            // Guardamos la hora exacta (ej. 08:00:00) para enviar al backend
+            // Aseguramos que tenga segundos para Carbon
+            inputHora.value = hora.length === 5 ? hora + ':00' : hora; 
+            
+            confirmBtn.disabled = false;
+            confirmBtn.style.opacity = "1";
         }
 
         // --- Inicialización ---
